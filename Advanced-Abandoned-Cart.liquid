@@ -1,0 +1,108 @@
+<script>
+
+  if(!inIframe()) {
+  var checkoutFormMain = document.querySelector('[action="/cart"]');  
+  var checkoutButtonMain = checkoutFormMain.querySelector('[type="submit"]');
+    
+    
+  // create iframe
+  var iframe = document.createElement('iframe');
+  //iframe.style.cssText = "visibility:hidden; height:0px; width:0px;"
+  iframe.onload = iframeEvents(); 
+  iframe.src = '/cart'; 
+  document.body.appendChild(iframe);   
+    
+
+ 
+  function deferIframe(methodIframe) {
+    if ((iframeDocument = iframe.contentDocument || iframe.contentWindow.document) !== null  ) {
+      if( iframeDocument.body !== null ) {
+        if(iframeDocument.querySelector('[type="submit"]')) {
+           methodIframe();
+        }else{
+          setTimeout(function() { deferIframe(methodIframe) }, 50);
+        }
+      }else{
+        setTimeout(function() { deferIframe(methodIframe) }, 50);
+      }
+    } else {
+        setTimeout(function() { deferIframe(methodIframe) }, 50);
+    }
+   }
+    
+ deferIframe(function () {    
+  var checkoutFormIframe = iframeDocument.querySelector('[action="/cart"]');
+  var checkoutButtonIframe = checkoutFormIframe.querySelector('[type="submit"]');  
+   
+  // disable form submission of main form
+  checkoutFormMain.addEventListener('submit', triggerPopup);
+   
+   
+   function triggerPopup(event) {
+   event.preventDefault();
+   //submit iframe
+   checkoutButtonIframe.click();
+     
+     
+// get new iframe url
+    function deferCheckout(methodCheckout) {
+    if (iframe.contentWindow.location.pathname.includes("checkouts")) {
+           methodCheckout();
+    } else {
+        setTimeout(function() { deferCheckout(methodCheckout) }, 50);
+    }
+   }
+ deferCheckout(function () {   
+     var checkoutPath = iframe.contentWindow.location.pathname;
+    // add to form action on popup
+      console.log('test');
+      var shippingSection = iframe.contentWindow.document.querySelector('.section section--shipping-address');
+      console.log(shippingSection);
+ });
+     
+     
+   // launch popup
+   console.log('popup');
+   iframe.style.cssText = "position: fixed;width: 100%;height: 100%;top: 0px;z-index: 9999";
+   
+   } 
+ });
+
+    
+
+}  
+  
+if(inIframe()) {  
+ // document.body.classList.add('aac-ready');
+}
+  
+  
+  
+  
+    
+function iframeEvents() {
+ // var iframeDocument = iframe.contentDocument || iframe.contentWindow.document;  
+ // var checkoutButtonIframe = iframeDocument.querySelector('[action="/cart"] [type="submit"]');
+//  console.log(checkoutButtonIframe);
+}    
+  
+function inIframe () {
+    try {
+        return window.self !== window.top;
+    } catch (e) {
+        return true;
+    }
+}
+</script>
+{% schema %}
+  {
+    "name": "Advanced Abandoned Cart",
+    "settings": []
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}
