@@ -1,4 +1,4 @@
-{% style %}
+<style>
 .AACloader {
 display: none;z-index: 9999999;position: fixed;top: 50%;left: 50%;border-width: 0;
 margin-top: -50px; 
@@ -7,7 +7,7 @@ margin-left: -50px;
 .AACloader svg {
 width: 100px;
 }
-{% endstyle %}
+</style>
 <script>
 if (!inIframe()) {
 
@@ -112,7 +112,6 @@ if (!inIframe()) {
         var shippingSection = AACiframe.contentWindow.document.querySelector('.section--shipping-address');
         shippingSection.style.cssText = 'visibility: hidden;height: 0px;width: 0px;padding: 0; position:fixed;';
         // set required fields
-        shippingSection.querySelector('#checkout_shipping_address_first_name').value = 'Unavailable';
         shippingSection.querySelector('#checkout_shipping_address_last_name').value = 'Unavailable';
         shippingSection.querySelector('#checkout_shipping_address_address1').value = 'Unavailable';
         shippingSection.querySelector('#checkout_shipping_address_city').value = 'Unavailable';
@@ -131,8 +130,16 @@ if (!inIframe()) {
 
     function refreshContactForm(event) {
         event.preventDefault();
+        this.querySelector('#checkout_shipping_address_last_name').value = this.querySelector('#checkout_email').value;
         var formData = serialize(this);
+        // validate email 
+      if(validateEmail()) {
         createAAC(formData);
+      }else{
+         AACiframe.removeEventListener('load', showError);
+         AACiframe.addEventListener('load', showError);
+         AACiframe.contentWindow.location.href = 'https://' + AACiframe.contentWindow.location.host + AACiframe.contentWindow.location.pathname + '?step=contact_information';
+      }
 
 
     }
@@ -165,7 +172,6 @@ if (!inIframe()) {
     function clearCheckout() {
         var shippingSection = AACiframe.contentWindow.document.querySelector('.section--shipping-address');
         // clear required fields
-        shippingSection.querySelector('#checkout_shipping_address_first_name').value = '';
         shippingSection.querySelector('#checkout_shipping_address_last_name').value = '';
         shippingSection.querySelector('#checkout_shipping_address_address1').value = '';
         shippingSection.querySelector('#checkout_shipping_address_city').value = '';
@@ -177,7 +183,30 @@ if (!inIframe()) {
         shippingSection.style.cssText = 'padding:0;';
     }
 
+  
+  function validateEmail() {
+   var emailFieldValue = AACiframe.contentWindow.document.querySelector('#checkout_email').value;
+   if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(emailFieldValue))
+  {
+    return (true)
+  }
+    return (false) 
+  }
+  
 
+  
+  function showError() {
+
+      fillThenHideShipping();
+      var emailFieldWrap = AACiframe.contentWindow.document.querySelector('#checkout_email').closest('.field__input-wrapper');
+      emailFieldWrap.classList.add('field--error'); 
+      var errormsg = document.createElement('p');
+      errormsg.classList.add('field__message','field__message--error');
+      errormsg.id ="error-for-email"; 
+      errormsg.innerHTML = 'Enter a valid email'; 
+      emailFieldWrap.appendChild(errormsg);
+  
+  }
 
     function createAAC(data) {
         console.log('Sending data');
