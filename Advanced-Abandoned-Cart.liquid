@@ -9,279 +9,263 @@ width: 100px;
 }
 {% endstyle %}
 <script>
- 
-  if(!inIframe()) {
-    
+if (!inIframe()) {
+
     // fix meta
     var meta = document.querySelector('meta[name=viewport]');
-    if(!meta.content.includes('user-scalable=no')) {
-    meta.content = meta.content + ',user-scalable=no';
+  if(meta) {
+    if (!meta.content.includes('user-scalable=no')) {
+        meta.content = meta.content + ',user-scalable=no';
     }
-  
-  var checkoutFormMain = document.querySelector('[action="/cart"]');  
-  var checkoutButtonMain = checkoutFormMain.querySelector('[type="submit"]');
-  checkoutFormMain.removeEventListener('submit', triggerPopup);   
-  checkoutFormMain.addEventListener('submit', triggerPopup);  
-  
-  // create Loader 
-  if(!document.querySelector('.AACloader')) {  
-  var loader = document.createElement('div'); 
-  loader.classList.add('AACloader');
-  loader.innerHTML = '<svg version="1.1" id="L9" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve"><path fill="#000" d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50" transform="rotate(10.616 50 50)"><animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="1s" from="0 50 50" to="360 50 50" repeatCount="indefinite"></animateTransform></path></svg>';
-  document.body.appendChild(loader);   
+  }else{
+  var meta = document.createElement('meta');
+  meta.setAttribute('name', 'viewport');
+  meta.content = "user-scalable=no";
+  document.getElementsByTagName('head')[0].appendChild(meta);  
   }
-    
 
+    var checkoutFormMain = document.querySelector('[action="/cart"]');
+    var checkoutButtonMain = checkoutFormMain.querySelector('[type="submit"]');
+    checkoutFormMain.removeEventListener('submit', triggerPopup);
+    checkoutFormMain.addEventListener('submit', triggerPopup);
 
- 
-
-
- 
-    
-    
- 
-    
-    
-    
-
-    
-
-  
-   
-
-   
-  
-  
-   
-
- 
-function changeCheckout() {
-  AACiframe.removeEventListener('load', changeCheckout);  
-  // what page are we on?
-  switch(AACiframe.contentWindow.document.querySelector('.breadcrumb .breadcrumb__item--current .breadcrumb__text').innerHTML ) {
-   case 'Information':    
-    // fill Then hide shipping
-    fillThenHideShipping();
-   break;     
-   case 'Shipping':    
-    // fill Then hide shipping
-    redirectToInformation();
-   break;       
-   default:
-   launchCheckout();   
-   break;  
-  }    
-}
-function triggerPopup(event) {
-   event.preventDefault();
-   createIframe();
-}   
-function createIframe() {
-  // create iframe
-  window.AACiframe = document.createElement('iframe');
-  AACiframe.removeEventListener('load', triggerCheckout);
-  AACiframe.addEventListener('load', triggerCheckout);  
-  AACiframe.style.cssText = "visibility:hidden; height:0px; width:0px;border: 0;"
-  AACiframe.src = '/cart'; 
-  document.body.appendChild(AACiframe);     
-  showLoader();
-  // add addressUpdate
- 
-}    
-function triggerCheckout() {
-   AACiframe.removeEventListener('load', triggerCheckout);
-  
-   AACiframe.removeEventListener('load', addressUpdate); 
-   AACiframe.addEventListener('load', addressUpdate); 
-  
-   AACiframe.removeEventListener('load', changeCheckout); 
-   AACiframe.addEventListener('load', changeCheckout); 
-  
-   // killswitch
-   AACiframe.removeEventListener('load', reloadParent); 
-   AACiframe.addEventListener('load', reloadParent); 
-   AACiframe.contentWindow.document.querySelector('[action="/cart"] [type="submit"]').click();  
-   
-}    
-// helper functions
-function addressUpdate() {
-  hideLoader();
-  var url = AACiframe.contentWindow.location.href;
-  var title = AACiframe.contentWindow.document.title;
-  history.pushState('', title, url);
-  document.title = title;
-} 
-
-function launchCheckout() {
-   document.body.style.cssText = 'position: fixed;';  
-   AACiframe.style.cssText = "position: fixed;width: 100%;height: 100%;top: 0px;z-index: 9999; background:#fff;border: none;";
-}      
- 
-    
-    
-// changeCheckout Library
-function fillThenHideShipping() {
-  var shippingSection = AACiframe.contentWindow.document.querySelector('.section--shipping-address'); 
-  shippingSection.style.cssText = 'visibility: hidden;height: 0px;width: 0px;padding: 0; position:fixed;';
-  // set required fields
-  shippingSection.querySelector('#checkout_shipping_address_first_name').value = 'Unavailable';
-  shippingSection.querySelector('#checkout_shipping_address_last_name').value = 'Unavailable';
-  shippingSection.querySelector('#checkout_shipping_address_address1').value = 'Unavailable';
-  shippingSection.querySelector('#checkout_shipping_address_city').value = 'Unavailable';
-  shippingSection.querySelector('#checkout_shipping_address_province').value = 'GA';
-  shippingSection.querySelector('#checkout_shipping_address_zip').value = '30363';
-  // change button
-  AACiframe.contentWindow.document.querySelector('#continue_button span').innerHTML ='Continue'; 
-  // setup form redirect
-  var contactForm = shippingSection.closest('form');
-  contactForm.removeEventListener('submit', refreshContactForm);
-  contactForm.addEventListener('submit', refreshContactForm);
-  launchCheckout();
-  
-  
-}    
-
-function refreshContactForm(event) {
-  event.preventDefault();
-  var formData = serialize(this);
-  createAAC( formData);
-
-
-}    
-
-function redirectToInformation() {
-  // if we dont have a name redirect
-  var address = AACiframe.contentWindow.document.querySelector('.address--tight'); 
- if(address.innerText.includes('Unavailable')) {
-  AACiframe.removeEventListener('load', waitForRedirect); 
-  AACiframe.addEventListener('load', waitForRedirect); 
-  AACiframe.contentWindow.location.href= 'https://' + AACiframe.contentWindow.location.host + AACiframe.contentWindow.location.pathname + '?step=contact_information';  
- }else{
- launchCheckout();
- }
-}
-    
-function waitForRedirect() {
-  AACiframe.removeEventListener('load', waitForRedirect); 
-  clearCheckout();
-  launchCheckout();  
-}    
-    
-function reloadParent() {
-  if(!AACiframe.contentWindow.location.pathname.includes('checkouts')) {
-   AACiframe.removeEventListener('load', reloadParent); 
-   window.location.href= AACiframe.contentWindow.location;
-  } 
-}    
-    
-function clearCheckout() {
-  var shippingSection = AACiframe.contentWindow.document.querySelector('.section--shipping-address'); 
-  // clear required fields
-  shippingSection.querySelector('#checkout_shipping_address_first_name').value = '';
-  shippingSection.querySelector('#checkout_shipping_address_last_name').value = '';
-  shippingSection.querySelector('#checkout_shipping_address_address1').value = '';
-  shippingSection.querySelector('#checkout_shipping_address_city').value = '';
-  shippingSection.querySelector('#checkout_shipping_address_province').value = 'GA';
-  shippingSection.querySelector('#checkout_shipping_address_zip').value = '';
-  
-  var contactSection = AACiframe.contentWindow.document.querySelector('.section--contact-information');
-  contactSection.style.cssText = 'visibility: hidden;height: 0px;width: 0px;padding: 0; position:fixed;';
-  shippingSection.style.cssText = 'padding:0;';
-}
-
-
-  
-function createAAC(data) {
-  console.log( 'Sending data' );
-
-  const XHR = new XMLHttpRequest();
-
-
-  // Define what happens on successful data submission
-  XHR.addEventListener( 'load', function(event) {
-    AACiframe.removeEventListener('load', clearCheckout);  
-    AACiframe.addEventListener('load', clearCheckout);  
-    AACiframe.contentWindow.location.href= 'https://' + AACiframe.contentWindow.location.host + AACiframe.contentWindow.location.pathname + '?step=contact_information';
-  } );
-
-  // Define what happens in case of error
-  XHR.addEventListener( 'error', function(event) {
-    alert( 'You typed your email wrong' );
-  } );
-
-  // Set up our request
-  XHR.open( 'POST', 'https://' + AACiframe.contentWindow.location.host + AACiframe.contentWindow.location.pathname);
-
-  // Add the required HTTP header for form data POST requests
-  XHR.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
-
-  // Finally, send our data.
-  XHR.send( data );
-}
+    // create Loader 
+    if (!document.querySelector('.AACloader')) {
+        var loader = document.createElement('div');
+        loader.classList.add('AACloader');
+        loader.innerHTML = '<svg version="1.1" id="L9" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve"><path fill="#000" d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50" transform="rotate(10.616 50 50)"><animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="1s" from="0 50 50" to="360 50 50" repeatCount="indefinite"></animateTransform></path></svg>';
+        document.body.appendChild(loader);
+    }
 
 
 
-    
-    
 
-// loader functions
-function showLoader() {
-  loader.style.display = 'block';  
-}
-function hideLoader() {
-  loader.style.display = 'none';      
-}    
- 
+    function changeCheckout() {
+        AACiframe.removeEventListener('load', changeCheckout);
+        // what page are we on?
+        switch (AACiframe.contentWindow.document.querySelector('.breadcrumb .breadcrumb__item--current .breadcrumb__text').innerHTML) {
+            case 'Information':
+                // fill Then hide shipping
+                fillThenHideShipping();
+                break;
+            case 'Shipping':
+                // fill Then hide shipping
+                redirectToInformation();
+                break;
+            default:
+                launchCheckout();
+                break;
+        }
+    }
+
+    function triggerPopup(event) {
+        event.preventDefault();
+        createIframe();
+    }
+
+    function createIframe() {
+        // create iframe
+        window.AACiframe = document.createElement('iframe');
+        AACiframe.removeEventListener('load', triggerCheckout);
+        AACiframe.addEventListener('load', triggerCheckout);
+        AACiframe.style.cssText = "visibility:hidden; height:0px; width:0px;border: 0;"
+        AACiframe.src = '/cart';
+        document.body.appendChild(AACiframe);
+        showLoader();
+        // add addressUpdate
+
+    }
+
+    function triggerCheckout() {
+        AACiframe.removeEventListener('load', triggerCheckout);
+
+        AACiframe.removeEventListener('load', addressUpdate);
+        AACiframe.addEventListener('load', addressUpdate);
+
+        AACiframe.removeEventListener('load', changeCheckout);
+        AACiframe.addEventListener('load', changeCheckout);
+
+        // killswitch
+        AACiframe.removeEventListener('load', reloadParent);
+        AACiframe.addEventListener('load', reloadParent);
+        AACiframe.contentWindow.document.querySelector('[action="/cart"] [type="submit"]').click();
+
+    }
+    // helper functions
+    function addressUpdate() {
+        hideLoader();
+        var url = AACiframe.contentWindow.location.href;
+        var title = AACiframe.contentWindow.document.title;
+        history.pushState('', title, url);
+        document.title = title;
+    }
+
+    function launchCheckout() {
+        document.body.style.cssText = 'position: fixed;';
+        AACiframe.style.cssText = "position: fixed;width: 100%;height: 100%;top: 0px;z-index: 9999; background:#fff;border: none;";
+    }
+
+
+
+    // changeCheckout Library
+    function fillThenHideShipping() {
+        var shippingSection = AACiframe.contentWindow.document.querySelector('.section--shipping-address');
+        shippingSection.style.cssText = 'visibility: hidden;height: 0px;width: 0px;padding: 0; position:fixed;';
+        // set required fields
+        shippingSection.querySelector('#checkout_shipping_address_first_name').value = 'Unavailable';
+        shippingSection.querySelector('#checkout_shipping_address_last_name').value = 'Unavailable';
+        shippingSection.querySelector('#checkout_shipping_address_address1').value = 'Unavailable';
+        shippingSection.querySelector('#checkout_shipping_address_city').value = 'Unavailable';
+        shippingSection.querySelector('#checkout_shipping_address_province').value = 'GA';
+        shippingSection.querySelector('#checkout_shipping_address_zip').value = '30363';
+        // change button
+        AACiframe.contentWindow.document.querySelector('#continue_button span').innerHTML = 'Continue';
+        // setup form redirect
+        var contactForm = shippingSection.closest('form');
+        contactForm.removeEventListener('submit', refreshContactForm);
+        contactForm.addEventListener('submit', refreshContactForm);
+        launchCheckout();
+
+
+    }
+
+    function refreshContactForm(event) {
+        event.preventDefault();
+        var formData = serialize(this);
+        createAAC(formData);
+
+
+    }
+
+    function redirectToInformation() {
+        // if we dont have a name redirect
+        var address = AACiframe.contentWindow.document.querySelector('.address--tight');
+        if (address.innerText.includes('Unavailable')) {
+            AACiframe.removeEventListener('load', waitForRedirect);
+            AACiframe.addEventListener('load', waitForRedirect);
+            AACiframe.contentWindow.location.href = 'https://' + AACiframe.contentWindow.location.host + AACiframe.contentWindow.location.pathname + '?step=contact_information';
+        } else {
+            launchCheckout();
+        }
+    }
+
+    function waitForRedirect() {
+        AACiframe.removeEventListener('load', waitForRedirect);
+        clearCheckout();
+        launchCheckout();
+    }
+
+    function reloadParent() {
+        if (!AACiframe.contentWindow.location.pathname.includes('checkouts')) {
+            AACiframe.removeEventListener('load', reloadParent);
+            window.location.href = AACiframe.contentWindow.location;
+        }
+    }
+
+    function clearCheckout() {
+        var shippingSection = AACiframe.contentWindow.document.querySelector('.section--shipping-address');
+        // clear required fields
+        shippingSection.querySelector('#checkout_shipping_address_first_name').value = '';
+        shippingSection.querySelector('#checkout_shipping_address_last_name').value = '';
+        shippingSection.querySelector('#checkout_shipping_address_address1').value = '';
+        shippingSection.querySelector('#checkout_shipping_address_city').value = '';
+        shippingSection.querySelector('#checkout_shipping_address_province').value = 'GA';
+        shippingSection.querySelector('#checkout_shipping_address_zip').value = '';
+
+        var contactSection = AACiframe.contentWindow.document.querySelector('.section--contact-information');
+        contactSection.style.cssText = 'visibility: hidden;height: 0px;width: 0px;padding: 0; position:fixed;';
+        shippingSection.style.cssText = 'padding:0;';
+    }
+
+
+
+    function createAAC(data) {
+        console.log('Sending data');
+
+        const XHR = new XMLHttpRequest();
+
+
+        // Define what happens on successful data submission
+        XHR.addEventListener('load', function(event) {
+            AACiframe.removeEventListener('load', clearCheckout);
+            AACiframe.addEventListener('load', clearCheckout);
+            AACiframe.contentWindow.location.href = 'https://' + AACiframe.contentWindow.location.host + AACiframe.contentWindow.location.pathname + '?step=contact_information';
+        });
+
+        // Define what happens in case of error
+        XHR.addEventListener('error', function(event) {
+            alert('You typed your email wrong');
+        });
+
+        // Set up our request
+        XHR.open('POST', 'https://' + AACiframe.contentWindow.location.host + AACiframe.contentWindow.location.pathname);
+
+        // Add the required HTTP header for form data POST requests
+        XHR.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+        // Finally, send our data.
+        XHR.send(data);
+    }
+
+
+
+
+    // loader functions
+    function showLoader() {
+        loader.style.display = 'block';
+    }
+
+    function hideLoader() {
+        loader.style.display = 'none';
+    }
+
 } // end If Not Iframe  
-  
 
-  
-  
-  
-    
-function inIframe () {
+
+
+
+function inIframe() {
     try {
         return window.self !== window.top;
     } catch (e) {
         return true;
     }
 }
-  
+
 /*!
  * Serialize all form data into a query string
  * (c) 2018 Chris Ferdinandi, MIT License, https://gomakethings.com
  * @param  {Node}   form The form to serialize
  * @return {String}      The serialized form data
  */
-var serialize = function (form) {
+var serialize = function(form) {
 
-	// Setup our serialized data
-	var serialized = [];
+    // Setup our serialized data
+    var serialized = [];
 
-	// Loop through each field in the form
-	for (var i = 0; i < form.elements.length; i++) {
+    // Loop through each field in the form
+    for (var i = 0; i < form.elements.length; i++) {
 
-		var field = form.elements[i];
+        var field = form.elements[i];
 
-		// Don't serialize fields without a name, submits, buttons, file and reset inputs, and disabled fields
-		if (!field.name || field.disabled || field.type === 'file' || field.type === 'reset' || field.type === 'submit' || field.type === 'button') continue;
+        // Don't serialize fields without a name, submits, buttons, file and reset inputs, and disabled fields
+        if (!field.name || field.disabled || field.type === 'file' || field.type === 'reset' || field.type === 'submit' || field.type === 'button') continue;
 
-		// If a multi-select, get all selections
-		if (field.type === 'select-multiple') {
-			for (var n = 0; n < field.options.length; n++) {
-				if (!field.options[n].selected) continue;
-				serialized.push(encodeURIComponent(field.name) + "=" + encodeURIComponent(field.options[n].value));
-			}
-		}
+        // If a multi-select, get all selections
+        if (field.type === 'select-multiple') {
+            for (var n = 0; n < field.options.length; n++) {
+                if (!field.options[n].selected) continue;
+                serialized.push(encodeURIComponent(field.name) + "=" + encodeURIComponent(field.options[n].value));
+            }
+        }
 
-		// Convert field data to a query string
-		else if ((field.type !== 'checkbox' && field.type !== 'radio') || field.checked) {
-			serialized.push(encodeURIComponent(field.name) + "=" + encodeURIComponent(field.value));
-		}
-	}
+        // Convert field data to a query string
+        else if ((field.type !== 'checkbox' && field.type !== 'radio') || field.checked) {
+            serialized.push(encodeURIComponent(field.name) + "=" + encodeURIComponent(field.value));
+        }
+    }
 
-	return serialized.join('&');
+    return serialized.join('&');
 
-};
-  
+};  
 </script>
