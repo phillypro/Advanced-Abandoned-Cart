@@ -41,6 +41,11 @@ if (!inIframe()) {
                 var checkoutButtonMain = checkoutFormMain.querySelector('.shopify-payment-button__more-options');
                 checkoutButtonMain.removeEventListener('click', createIframe);
                 checkoutButtonMain.addEventListener('click', createIframe);
+              if(checkoutFormMain.querySelector('.shopify-payment-button__button--unbranded')) {
+              var checkoutButtonMain2 = checkoutFormMain.querySelector('.shopify-payment-button__more-options');
+                checkoutButtonMain2.removeEventListener('click', createIframe);
+                checkoutButtonMain2.addEventListener('click', createIframe);
+              }
             });
 
         }
