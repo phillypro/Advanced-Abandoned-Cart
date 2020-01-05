@@ -13,11 +13,39 @@ if (!inIframe()) {
         document.getElementsByTagName('head')[0].appendChild(meta);
     }
 
-    var checkoutFormMain = document.querySelector('[action="/cart"]');
-    var checkoutButtonMain = checkoutFormMain.querySelector('[type="submit"]');
-    checkoutFormMain.removeEventListener('submit', triggerPopup);
-    checkoutFormMain.addEventListener('submit', triggerPopup);
+    var checkoutFormMain = (document.querySelector('[action="/cart"]') ? document.querySelector('[action="/cart"]') : document.querySelector('[action="/cart/add"]'));
+    if (!checkoutFormMain.action.includes('add')) {
+        var checkoutButtonMain = checkoutFormMain.querySelector('[type="submit"]');
+        checkoutFormMain.removeEventListener('submit', triggerPopup);
+        checkoutFormMain.addEventListener('submit', triggerPopup);
+    } else {
 
+        var checkoutButtonMain = checkoutFormMain.querySelector('.shopify-payment-button__more-options');
+        if (checkoutButtonMain) {
+
+            var checkoutButtonMainCount = 1;
+
+            function defercheckoutButtonMain(methodcheckoutButtonMain) {
+                if (checkoutFormMain.querySelector('.shopify-payment-button__more-options') && !checkoutFormMain.querySelector('.shopify-payment-button__more-options').classList.contains('shopify-payment-button__button--hidden')) {
+                    methodcheckoutButtonMain();
+                } else {
+                    if (checkoutButtonMainCount < 30) {
+                        setTimeout(function() {
+                            defercheckoutButtonMain(methodcheckoutButtonMain)
+                        }, 300);
+                        checkoutButtonMainCount++;
+                    }
+                }
+            }
+            defercheckoutButtonMain(function() {
+                var checkoutButtonMain = checkoutFormMain.querySelector('.shopify-payment-button__more-options');
+                checkoutButtonMain.removeEventListener('click', createIframe);
+                checkoutButtonMain.addEventListener('click', createIframe);
+            });
+
+        }
+
+    }
     // create Loader 
     if (!document.querySelector('.AACloader')) {
         var loader = document.createElement('div');
@@ -54,17 +82,26 @@ if (!inIframe()) {
         createIframe();
     }
 
-    function createIframe() {
+
+    function createIframe(event = null) {
         // create iframe
         window.AAC = document.createElement('iframe');
-        AAC.removeEventListener('load', triggerCheckout);
-        AAC.addEventListener('load', triggerCheckout);
         AAC.style.cssText = "visibility:hidden; height:0px; width:0px;border: 0;"
-        AAC.src = '/cart';
+        if (!event.target.closest('form').action.includes('add')) {
+            AAC.removeEventListener('load', triggerCheckout);
+            AAC.addEventListener('load', triggerCheckout);
+            AAC.src = window.location.href;
+        } else {
+            AAC.removeEventListener('load', addressUpdate);
+            AAC.addEventListener('load', addressUpdate);
+            AAC.removeEventListener('load', changeCheckout);
+            AAC.addEventListener('load', changeCheckout);
+            AAC.removeEventListener('load', reloadParent);
+            AAC.addEventListener('load', reloadParent);
+            AAC.src = getCheckoutURL();
+        }
         document.body.appendChild(AAC);
         showLoader();
-        // add addressUpdate
-
     }
 
     function triggerCheckout() {
@@ -82,6 +119,10 @@ if (!inIframe()) {
         AAC.contentWindow.document.querySelector('[action="/cart"] [type="submit"]').click();
 
     }
+
+
+
+
     // helper functions
     function addressUpdate() {
         hideLoader();
@@ -92,8 +133,31 @@ if (!inIframe()) {
     }
 
     function launchCheckout() {
-        document.body.style.cssText = 'position: fixed;';
         AAC.style.cssText = "position: fixed;width: 100%;height: 100%;top: 0px;z-index: 2147483647; background:#fff;border: none;";
+        document.body.style.cssText = 'position: fixed;width:0;height:0;';
+    }
+
+
+    function getCheckoutURL() {
+        if (checkoutFormMain.querySelector(".multiselect_wrap")) {
+            var itemStr = '';
+            var i = 0;
+            var matches = Array.from(checkoutFormMain.querySelectorAll('[name="id"]:checked'));
+            var $len = matches.length;
+            matches.forEach(function(element) {
+                itemStr += element.value + ':' + element.getAttribute('quantity');
+                if (i !== $len - 1) {
+                    itemStr += ',';
+                }
+                i++;
+            });
+        } else {
+            itemStr = checkoutFormMain.querySelector('[name="id"]').value;
+            itemStr += ':' + (checkoutFormMain.querySelector('[name="quantity"]') ? checkoutFormMain.querySelector('[name="quantity"]').value : 1);
+        }
+        console.log(window);
+        return 'https://' + window.document.location.host + '/cart/' + itemStr + '?checkout';
+
     }
 
 
