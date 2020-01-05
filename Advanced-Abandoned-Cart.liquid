@@ -1,13 +1,3 @@
-<style>
-.AACloader {
-display: none;z-index: 9999999;position: fixed;top: 50%;left: 50%;border-width: 0;
-margin-top: -50px; 
-margin-left: -50px; 
-}
-.AACloader svg {
-width: 100px;
-}
-</style>
 <script>
 if (!inIframe()) {
 
@@ -33,7 +23,9 @@ if (!inIframe()) {
     if (!document.querySelector('.AACloader')) {
         var loader = document.createElement('div');
         loader.classList.add('AACloader');
+        loader.style.cssText = 'display: none;z-index: 9999999;position: fixed;top: 50%;left: 50%;border-width: 0;margin-top: -50px; margin-left: -50px;';
         loader.innerHTML = '<svg version="1.1" id="L9" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve"><path fill="#000" d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50" transform="rotate(10.616 50 50)"><animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="1s" from="0 50 50" to="360 50 50" repeatCount="indefinite"></animateTransform></path></svg>';
+        loader.querySelector('svg').style.cssText = 'width: 100px;';
         document.body.appendChild(loader);
     }
 
@@ -101,8 +93,8 @@ if (!inIframe()) {
     }
 
     function launchCheckout() {
-      document.body.style.cssText = 'position: fixed;width:0px;height:0px;';
-        AACiframe.style.cssText = "position: fixed;width: 100%;height: 100%;top: 0px;z-index: 9999; background:#fff;border: none;";
+        document.body.style.cssText = 'position: fixed;';
+        AACiframe.style.cssText = "position: fixed;width: 100%;height: 100%;top: 0px;z-index: 2147483647; background:#fff;border: none;";
     }
 
 
