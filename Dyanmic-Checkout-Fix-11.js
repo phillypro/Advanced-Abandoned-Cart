@@ -46,14 +46,12 @@
                 switch (t) {
                     case "web_checkout":
                     case "web_checkout_accelerated":
-                       console.log('bitch 1');
                         return o.PageType.CheckoutPage;
                     case "cart_page":
                     case "cart_page_accelerated":
                         return o.PageType.CartPage;
                     case "cart_ajax":
                     case "cart_ajax_accelerated":
-                         console.log('bitch 2');
                         return o.PageType.CartAjax;
                     default:
                         return o.PageType.ProductPage
@@ -702,8 +700,7 @@
                         return k.a.wrap(function(n) {
                             for (;;) switch (n.prev = n.next) {
                                 case 0:
-                             
-                                  //  return n.abrupt("return", t.props.checkoutProcessor.begin(t.props.defaultInstrument, "sheet"));
+                                    //return n.abrupt("return", t.props.checkoutProcessor.begin(t.props.defaultInstrument, "sheet"));
                                 case 1:
                                 case "end":
                                     return n.stop()
