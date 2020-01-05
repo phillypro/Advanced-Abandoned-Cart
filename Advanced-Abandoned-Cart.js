@@ -1,4 +1,3 @@
-<script>
 if (!inIframe()) {
 
     // fix meta
@@ -288,4 +287,3 @@ var serialize = function(form) {
     return serialized.join('&');
 
 };
-</script>
