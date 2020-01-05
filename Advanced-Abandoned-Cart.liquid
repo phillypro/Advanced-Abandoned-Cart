@@ -3,16 +3,16 @@ if (!inIframe()) {
 
     // fix meta
     var meta = document.querySelector('meta[name=viewport]');
-  if(meta) {
-    if (!meta.content.includes('user-scalable=no')) {
-        meta.content = meta.content + ',user-scalable=no';
+    if (meta) {
+        if (!meta.content.includes('user-scalable=no')) {
+            meta.content = meta.content + ',user-scalable=no';
+        }
+    } else {
+        var meta = document.createElement('meta');
+        meta.setAttribute('name', 'viewport');
+        meta.content = "user-scalable=no";
+        document.getElementsByTagName('head')[0].appendChild(meta);
     }
-  }else{
-  var meta = document.createElement('meta');
-  meta.setAttribute('name', 'viewport');
-  meta.content = "user-scalable=no";
-  document.getElementsByTagName('head')[0].appendChild(meta);  
-  }
 
     var checkoutFormMain = document.querySelector('[action="/cart"]');
     var checkoutButtonMain = checkoutFormMain.querySelector('[type="submit"]');
@@ -33,9 +33,9 @@ if (!inIframe()) {
 
 
     function changeCheckout() {
-        AACiframe.removeEventListener('load', changeCheckout);
+        AAC.removeEventListener('load', changeCheckout);
         // what page are we on?
-        switch (AACiframe.contentWindow.document.querySelector('.breadcrumb .breadcrumb__item--current .breadcrumb__text').innerHTML) {
+        switch (AAC.contentWindow.document.querySelector('.breadcrumb .breadcrumb__item--current .breadcrumb__text').innerHTML) {
             case 'Information':
                 // fill Then hide shipping
                 fillThenHideShipping();
@@ -57,51 +57,51 @@ if (!inIframe()) {
 
     function createIframe() {
         // create iframe
-        window.AACiframe = document.createElement('iframe');
-        AACiframe.removeEventListener('load', triggerCheckout);
-        AACiframe.addEventListener('load', triggerCheckout);
-        AACiframe.style.cssText = "visibility:hidden; height:0px; width:0px;border: 0;"
-        AACiframe.src = '/cart';
-        document.body.appendChild(AACiframe);
+        window.AAC = document.createElement('iframe');
+        AAC.removeEventListener('load', triggerCheckout);
+        AAC.addEventListener('load', triggerCheckout);
+        AAC.style.cssText = "visibility:hidden; height:0px; width:0px;border: 0;"
+        AAC.src = '/cart';
+        document.body.appendChild(AAC);
         showLoader();
         // add addressUpdate
 
     }
 
     function triggerCheckout() {
-        AACiframe.removeEventListener('load', triggerCheckout);
+        AAC.removeEventListener('load', triggerCheckout);
 
-        AACiframe.removeEventListener('load', addressUpdate);
-        AACiframe.addEventListener('load', addressUpdate);
+        AAC.removeEventListener('load', addressUpdate);
+        AAC.addEventListener('load', addressUpdate);
 
-        AACiframe.removeEventListener('load', changeCheckout);
-        AACiframe.addEventListener('load', changeCheckout);
+        AAC.removeEventListener('load', changeCheckout);
+        AAC.addEventListener('load', changeCheckout);
 
         // killswitch
-        AACiframe.removeEventListener('load', reloadParent);
-        AACiframe.addEventListener('load', reloadParent);
-        AACiframe.contentWindow.document.querySelector('[action="/cart"] [type="submit"]').click();
+        AAC.removeEventListener('load', reloadParent);
+        AAC.addEventListener('load', reloadParent);
+        AAC.contentWindow.document.querySelector('[action="/cart"] [type="submit"]').click();
 
     }
     // helper functions
     function addressUpdate() {
         hideLoader();
-        var url = AACiframe.contentWindow.location.href;
-        var title = AACiframe.contentWindow.document.title;
+        var url = AAC.contentWindow.location.href;
+        var title = AAC.contentWindow.document.title;
         history.pushState('', title, url);
         document.title = title;
     }
 
     function launchCheckout() {
         document.body.style.cssText = 'position: fixed;';
-        AACiframe.style.cssText = "position: fixed;width: 100%;height: 100%;top: 0px;z-index: 2147483647; background:#fff;border: none;";
+        AAC.style.cssText = "position: fixed;width: 100%;height: 100%;top: 0px;z-index: 2147483647; background:#fff;border: none;";
     }
 
 
 
     // changeCheckout Library
     function fillThenHideShipping() {
-        var shippingSection = AACiframe.contentWindow.document.querySelector('.section--shipping-address');
+        var shippingSection = AAC.contentWindow.document.querySelector('.section--shipping-address');
         shippingSection.style.cssText = 'visibility: hidden;height: 0px;width: 0px;padding: 0; position:fixed;';
         // set required fields
         shippingSection.querySelector('#checkout_shipping_address_last_name').value = 'Unavailable';
@@ -110,7 +110,7 @@ if (!inIframe()) {
         shippingSection.querySelector('#checkout_shipping_address_province').value = 'GA';
         shippingSection.querySelector('#checkout_shipping_address_zip').value = '30363';
         // change button
-        AACiframe.contentWindow.document.querySelector('#continue_button span').innerHTML = 'Continue';
+        AAC.contentWindow.document.querySelector('#continue_button span').innerHTML = 'Continue';
         // setup form redirect
         var contactForm = shippingSection.closest('form');
         contactForm.removeEventListener('submit', refreshContactForm);
@@ -125,44 +125,44 @@ if (!inIframe()) {
         this.querySelector('#checkout_shipping_address_last_name').value = this.querySelector('#checkout_email').value;
         var formData = serialize(this);
         // validate email 
-      if(validateEmail()) {
-        createAAC(formData);
-      }else{
-         AACiframe.removeEventListener('load', showError);
-         AACiframe.addEventListener('load', showError);
-         AACiframe.contentWindow.location.href = 'https://' + AACiframe.contentWindow.location.host + AACiframe.contentWindow.location.pathname + '?step=contact_information';
-      }
+        if (validateEmail()) {
+            createAAC(formData);
+        } else {
+            AAC.removeEventListener('load', showError);
+            AAC.addEventListener('load', showError);
+            AAC.contentWindow.location.href = 'https://' + AAC.contentWindow.location.host + AAC.contentWindow.location.pathname + '?step=contact_information';
+        }
 
 
     }
 
     function redirectToInformation() {
         // if we dont have a name redirect
-        var address = AACiframe.contentWindow.document.querySelector('.address--tight');
+        var address = AAC.contentWindow.document.querySelector('.address--tight');
         if (address.innerText.includes('Unavailable')) {
-            AACiframe.removeEventListener('load', waitForRedirect);
-            AACiframe.addEventListener('load', waitForRedirect);
-            AACiframe.contentWindow.location.href = 'https://' + AACiframe.contentWindow.location.host + AACiframe.contentWindow.location.pathname + '?step=contact_information';
+            AAC.removeEventListener('load', waitForRedirect);
+            AAC.addEventListener('load', waitForRedirect);
+            AAC.contentWindow.location.href = 'https://' + AAC.contentWindow.location.host + AAC.contentWindow.location.pathname + '?step=contact_information';
         } else {
             launchCheckout();
         }
     }
 
     function waitForRedirect() {
-        AACiframe.removeEventListener('load', waitForRedirect);
+        AAC.removeEventListener('load', waitForRedirect);
         clearCheckout();
         launchCheckout();
     }
 
     function reloadParent() {
-        if (!AACiframe.contentWindow.location.pathname.includes('checkouts')) {
-            AACiframe.removeEventListener('load', reloadParent);
-            window.location.href = AACiframe.contentWindow.location;
+        if (!AAC.contentWindow.location.pathname.includes('checkouts')) {
+            AAC.removeEventListener('load', reloadParent);
+            window.location.href = AAC.contentWindow.location;
         }
     }
 
     function clearCheckout() {
-        var shippingSection = AACiframe.contentWindow.document.querySelector('.section--shipping-address');
+        var shippingSection = AAC.contentWindow.document.querySelector('.section--shipping-address');
         // clear required fields
         shippingSection.querySelector('#checkout_shipping_address_last_name').value = '';
         shippingSection.querySelector('#checkout_shipping_address_address1').value = '';
@@ -170,35 +170,34 @@ if (!inIframe()) {
         shippingSection.querySelector('#checkout_shipping_address_province').value = 'GA';
         shippingSection.querySelector('#checkout_shipping_address_zip').value = '';
 
-        var contactSection = AACiframe.contentWindow.document.querySelector('.section--contact-information');
+        var contactSection = AAC.contentWindow.document.querySelector('.section--contact-information');
         contactSection.style.cssText = 'visibility: hidden;height: 0px;width: 0px;padding: 0; position:fixed;';
         shippingSection.style.cssText = 'padding:0;';
     }
 
-  
-  function validateEmail() {
-   var emailFieldValue = AACiframe.contentWindow.document.querySelector('#checkout_email').value;
-   if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(emailFieldValue))
-  {
-    return (true)
-  }
-    return (false) 
-  }
-  
 
-  
-  function showError() {
+    function validateEmail() {
+        var emailFieldValue = AAC.contentWindow.document.querySelector('#checkout_email').value;
+        if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(emailFieldValue)) {
+            return (true)
+        }
+        return (false)
+    }
 
-      fillThenHideShipping();
-      var emailFieldWrap = AACiframe.contentWindow.document.querySelector('#checkout_email').closest('.field__input-wrapper');
-      emailFieldWrap.classList.add('field--error'); 
-      var errormsg = document.createElement('p');
-      errormsg.classList.add('field__message','field__message--error');
-      errormsg.id ="error-for-email"; 
-      errormsg.innerHTML = 'Enter a valid email'; 
-      emailFieldWrap.appendChild(errormsg);
-  
-  }
+
+
+    function showError() {
+
+        fillThenHideShipping();
+        var emailFieldWrap = AAC.contentWindow.document.querySelector('#checkout_email').closest('.field__input-wrapper');
+        emailFieldWrap.classList.add('field--error');
+        var errormsg = document.createElement('p');
+        errormsg.classList.add('field__message', 'field__message--error');
+        errormsg.id = "error-for-email";
+        errormsg.innerHTML = 'Enter a valid email';
+        emailFieldWrap.appendChild(errormsg);
+
+    }
 
     function createAAC(data) {
         console.log('Sending data');
@@ -208,9 +207,9 @@ if (!inIframe()) {
 
         // Define what happens on successful data submission
         XHR.addEventListener('load', function(event) {
-            AACiframe.removeEventListener('load', clearCheckout);
-            AACiframe.addEventListener('load', clearCheckout);
-            AACiframe.contentWindow.location.href = 'https://' + AACiframe.contentWindow.location.host + AACiframe.contentWindow.location.pathname + '?step=contact_information';
+            AAC.removeEventListener('load', clearCheckout);
+            AAC.addEventListener('load', clearCheckout);
+            AAC.contentWindow.location.href = 'https://' + AAC.contentWindow.location.host + AAC.contentWindow.location.pathname + '?step=contact_information';
         });
 
         // Define what happens in case of error
@@ -219,7 +218,7 @@ if (!inIframe()) {
         });
 
         // Set up our request
-        XHR.open('POST', 'https://' + AACiframe.contentWindow.location.host + AACiframe.contentWindow.location.pathname);
+        XHR.open('POST', 'https://' + AAC.contentWindow.location.host + AAC.contentWindow.location.pathname);
 
         // Add the required HTTP header for form data POST requests
         XHR.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -288,5 +287,5 @@ var serialize = function(form) {
 
     return serialized.join('&');
 
-};  
+};
 </script>
