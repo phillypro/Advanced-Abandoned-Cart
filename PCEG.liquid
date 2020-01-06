@@ -1,0 +1,346 @@
+<style>
+  .pceg-wrap {
+      position: relative;
+  }
+  .pceg-wrap:before {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 800;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    content: '';
+    opacity: 0;
+    -webkit-transition: opacity 0.5s;
+    transition: opacity 0.5s;
+    pointer-events: none;
+  }
+  .pceg {
+    background: white;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 100%;
+    text-align: center;
+    padding: 20px 30px 15px;
+    -webkit-box-shadow: 0 0 14px rgba(0, 0, 0, 0.22);
+    -moz-box-shadow: 0 0 14px rgba(0, 0, 0, 0.22);
+    box-shadow:0 0 14px rgba(0, 0, 0, 0.22);
+    
+    position: fixed;
+    z-index: 900;
+    opacity: 0;
+    -webkit-transition: opacity 0.3s 0.5s, width 0.4s 0.1s, height 0.4s 0.1s, top 0.4s 0.1s, left 0.4s 0.1s, margin 0.4s 0.1s;
+    transition: opacity 0.3s 0.5s, width 0.4s 0.1s, height 0.4s 0.1s, top 0.4s 0.1s, left 0.4s 0.1s, margin 0.4s 0.1s;
+  }
+  .pceg input {
+  width: 100%;
+  }
+  .pceg button {
+    padding: 7px 20px;
+    font-weight: 600;
+    border-radius: 0px 3px 3px 0px;
+    -webkit-border-radius: 0px 3px 3px 0px;
+    cursor: pointer;
+    width: 100%;
+    margin: 15px 0 20px;
+    outline: none;
+    border: none;
+  }
+  /* closed styles */
+  .pceg-wrap .open {
+  
+  }
+ 
+</style>
+
+<script>
+
+ 
+// CREATE MODALS
+var checkoutFormMain = (document.querySelector('[action="/cart"]') ? document.querySelector('[action="/cart"]') : document.querySelector('[action="/cart/add"]'));
+// get the main checkout buttons
+if (!checkoutFormMain.action.includes('add')) {
+    var checkoutButtonMain = checkoutFormMain.querySelector('[type="submit"]');
+    createModal(checkoutButtonMain);
+} else {
+    var checkoutButtonMain = checkoutFormMain.querySelector('.shopify-payment-button__more-options');
+    if (checkoutButtonMain) {
+
+        var checkoutButtonMainCount = 1;
+
+        function defercheckoutButtonMain(methodcheckoutButtonMain) {
+            if (checkoutFormMain.querySelector('.shopify-payment-button__more-options') && !checkoutFormMain.querySelector('.shopify-payment-button__more-options').classList.contains('shopify-payment-button__button--hidden') || checkoutFormMain.querySelector('.shopify-payment-button__button--unbranded') && !checkoutFormMain.querySelector('.shopify-payment-button__button--unbranded').classList.contains('shopify-payment-button__button--hidden')) {
+                methodcheckoutButtonMain();
+            } else {
+                if (checkoutButtonMainCount < 30) {
+                    setTimeout(function() {
+                        defercheckoutButtonMain(methodcheckoutButtonMain)
+                    }, 300);
+                    checkoutButtonMainCount++;
+                }
+            }
+        }
+        defercheckoutButtonMain(function() {
+            var checkoutButtonMain = checkoutFormMain.querySelector('.shopify-payment-button__more-options');
+            if (checkoutButtonMain) {
+                checkoutButtonMain.outerHTML = checkoutButtonMain.outerHTML;
+                var checkoutButtonMain = checkoutFormMain.querySelector('.shopify-payment-button__more-options');
+                createModal(checkoutButtonMain);
+            }
+            var checkoutButtonMain2 = checkoutFormMain.querySelector('.shopify-payment-button__button--unbranded');
+            if (checkoutButtonMain2) {
+                checkoutButtonMain2.outerHTML = checkoutButtonMain2.outerHTML;
+                checkoutButtonMain2 = checkoutFormMain.querySelector('.shopify-payment-button__button--unbranded')
+                createModal(checkoutButtonMain2);
+            }
+        });
+
+    }
+}
+
+function createModal(element) {
+// create morph content
+var contentwrap = document.createElement('div');
+contentwrap.classList.add('pceg-wrap');
+wrap(element, contentwrap);  
+var morphContent = document.createElement('div');
+morphContent.innerHTML = '<div class="content"><h4>Type in your email to get started</h4><div><input type="email" placeholder="Your@email.com" /><button>Continue</button></div><div>';  
+morphContent.classList.add('pceg');   
+morphContent.style.height = contentwrap.clientHeight + 'px';    
+morphContent.style.width = contentwrap.clientWidth + 'px';     
+insertAfter(morphContent, element); 
+  
+// ATTACH EVENT LISTENER  
+  
+// product
+if(checkoutFormMain.action.includes('add')) {
+  element.removeEventListener('click', openModal);
+  element.addEventListener('click', openModal);
+}else{
+// cart
+isFirstStep().then(function(response) {
+  // if first step
+  if(response) {
+  element.removeEventListener('click', openModal);
+  element.addEventListener('click', openModal);  
+  }
+});    
+}  
+}  
+    
+
+  
+// OPEN MODAL
+function openModal(event) {
+event.preventDefault();  
+var target = event.target.nodeName;  
+if(target == 'FORM') { 
+target = checkoutButtonMain;    
+}else{
+target = event.target;
+}
+  
+var pcegWrap = target.parentElement;   
+var pcegContent = pcegWrap.querySelector('.pceg');     
+// move modal to start position 
+
+
+  
+// add open class
+var pcegWrap = target.parentElement; 
+pcegWrap.classList.add('open');  
+};  
+
+
+
+  
+function isFirstStep() {
+    var quizUrl = 'https://' + window.document.location.host + '/checkout/';
+    var myHeaders = new Headers();
+    myHeaders.append('Content-Type', 'text/html');
+
+    return fetch(quizUrl, {
+        mode: 'no-cors',
+        method: 'get',
+        headers: myHeaders
+    }).then(function(response) {
+        return response.text();
+    }).then(function(text) {
+        const parser = new DOMParser();
+        const htmlDocument = parser.parseFromString(text, "text/html");
+        const form = htmlDocument.documentElement.querySelector(".edit_checkout");
+        if (form) {
+            var currentStep = form.querySelector('[name="step"]');
+            if (currentStep.value == 'shipping_method') {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    });
+
+}
+  
+  
+
+ 
+  
+function getCheckoutURL(event) {
+   if (checkoutFormMain.action.includes('add')) {
+    // product page
+    if (checkoutFormMain.querySelector(".multiselect_wrap")) {
+            var itemStr = '';
+            var i = 0;
+            var matches = Array.from(checkoutFormMain.querySelectorAll('[name="id"]:checked'));
+            var $len = matches.length;
+            matches.forEach(function(element) {
+                itemStr += element.value + ':' + element.getAttribute('quantity');
+                if (i !== $len - 1) {
+                    itemStr += ',';
+                }
+                i++;
+            });
+        } else {
+            itemStr = checkoutFormMain.querySelector('[name="id"]').value;
+            itemStr += ':' + (checkoutFormMain.querySelector('[name="quantity"]') ? checkoutFormMain.querySelector('[name="quantity"]').value : 1);
+        }
+        var url = 'https://' + window.document.location.host + '/cart/' + itemStr + '?checkout';
+   }else{
+   // cart page 
+   dofetch('https://' + window.document.location.host + '/checkout');  
+   }
+}  
+  
+
+function dofetch(url) {  
+var quizUrl = url;
+var myHeaders = new Headers();
+myHeaders.append('Content-Type', 'text/html');
+fetch(quizUrl,{
+    mode: 'no-cors',
+    method: 'get',
+    headers: myHeaders
+}).then(function(response) {
+    response.text().then(function(text) {
+    const parser = new DOMParser();
+    const htmlDocument = parser.parseFromString(text, "text/html");
+    const form = htmlDocument.documentElement.querySelector(".edit_checkout");
+    var currentStep = form.querySelector('[name="step"]');
+      if(currentStep.value != 'shipping_method') {
+       // if not on first step then lets redirect them 
+      window.document.location.href= form.action;
+      } else{
+       // lets get that sweet sweet email
+        // test email
+        form.querySelector('#checkout_email_or_phone').value = 'dangerguy3@gmail.com';
+        // test email
+        form.querySelector('#checkout_shipping_address_last_name').value = 'Unavailable';
+        form.querySelector('#checkout_shipping_address_last_name').value = 'Unavailable';
+        form.querySelector('#checkout_shipping_address_address1').value = 'Unavailable';
+        form.querySelector('#checkout_shipping_address_city').value = 'Unavailable';
+        form.querySelector('#checkout_shipping_address_province').value = 'GA';
+        form.querySelector('#checkout_shipping_address_zip').value = '30363'; 
+        //createAAC(form);
+      }
+      
+      
+    })
+}).catch(function(err) {
+  console.log(err)
+});  
+}
+  
+  
+  
+
+function wrap(el, wrapper) {
+    el.parentNode.insertBefore(wrapper, el);
+    wrapper.appendChild(el);
+}  
+  
+  
+function insertAfter(newNode, referenceNode) {
+    referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+}    
+  
+function createAAC(form) {
+        console.log('Sending data');
+        var data = serialize(form);
+        const XHR = new XMLHttpRequest();
+
+
+        // Define what happens on successful data submission
+        XHR.addEventListener('load', function(event) {
+            window.document.location.href = form.action + "?step=contact_information&checkout[shipping_address][last_name]=&checkout[shipping_address][address1]=&checkout[shipping_address][city]=&checkout[shipping_address][zip]=";
+        });
+
+        // Define what happens in case of error
+        XHR.addEventListener('error', function(event) {
+            alert('You typed your email wrong');
+        });
+
+        // Set up our request
+        XHR.open('POST', form.action);
+
+        // Add the required HTTP header for form data POST requests
+        XHR.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+        // Finally, send our data.
+        XHR.send(data);
+}  
+  
+  
+  
+function loadJSON(path, success, error)
+{
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function()
+    {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+                if (success)
+                    success(JSON.parse(xhr.responseText));
+            } else {
+                if (error)
+                    error(xhr);
+            }
+        }
+    };
+    xhr.open("GET", path, true);
+    xhr.send();
+}  
+  
+var serialize = function(form) {
+
+    // Setup our serialized data
+    var serialized = [];
+
+    // Loop through each field in the form
+    for (var i = 0; i < form.elements.length; i++) {
+
+        var field = form.elements[i];
+
+        // Don't serialize fields without a name, submits, buttons, file and reset inputs, and disabled fields
+        if (!field.name || field.disabled || field.type === 'file' || field.type === 'reset' || field.type === 'submit' || field.type === 'button') continue;
+
+        // If a multi-select, get all selections
+        if (field.type === 'select-multiple') {
+            for (var n = 0; n < field.options.length; n++) {
+                if (!field.options[n].selected) continue;
+                serialized.push(encodeURIComponent(field.name) + "=" + encodeURIComponent(field.options[n].value));
+            }
+        }
+
+        // Convert field data to a query string
+        else if ((field.type !== 'checkbox' && field.type !== 'radio') || field.checked) {
+            serialized.push(encodeURIComponent(field.name) + "=" + encodeURIComponent(field.value));
+        }
+    }
+
+    return serialized.join('&');
+
+};  
+</script>
