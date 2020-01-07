@@ -336,7 +336,12 @@ height: 340px !important;
 </style>
 <script>
 // CREATE MODALS
-var checkoutFormMain = (document.querySelector('[action="/cart"]') ? document.querySelector('[action="/cart"]') : document.querySelector('[action="/cart/add"]'));
+var checkoutFormMain = (document.querySelector('[action="/cart"]') ? document.querySelector('[action="/cart"]') : document.querySelector('[action="/cart/add"]'));  
+  
+prepareButtons(checkoutFormMain); 
+  
+  
+function prepareButtons(checkoutFormMain) {  
 // get the main checkout buttons
 if (!checkoutFormMain.action.includes('add')) {
     var checkoutButtonMain = checkoutFormMain.querySelector('[type="submit"][name="checkout"]');
@@ -348,8 +353,17 @@ if (!checkoutFormMain.action.includes('add')) {
         var checkoutButtonMainCount = 1;
 
         function defercheckoutButtonMain(methodcheckoutButtonMain) {
-            if (checkoutFormMain.querySelector('.shopify-payment-button__more-options') && !checkoutFormMain.querySelector('.shopify-payment-button__more-options').classList.contains('shopify-payment-button__button--hidden') || checkoutFormMain.querySelector('.shopify-payment-button__button--unbranded') && !checkoutFormMain.querySelector('.shopify-payment-button__button--unbranded').classList.contains('shopify-payment-button__button--hidden')) {
-                methodcheckoutButtonMain();
+            if (checkoutFormMain.querySelector('.shopify-payment-button__more-options') && !checkoutFormMain.querySelector('.shopify-payment-button__more-options').classList.contains('shopify-payment-button__button--hidden') || checkoutFormMain.querySelector('.shopify-payment-button__button--unbranded') && !checkoutFormMain.querySelector('.shopify-payment-button__button--unbranded').classList.contains('shopify-payment-button__button--hidden')) {            
+              if (checkoutFormMain.querySelector('.shopify-payment-button').getAttribute('disabled') !== 'disabled') {
+              methodcheckoutButtonMain();
+              }else{
+                if (checkoutButtonMainCount < 30) {
+                    setTimeout(function() {
+                        defercheckoutButtonMain(methodcheckoutButtonMain)
+                    }, 300);
+                    checkoutButtonMainCount++;
+                }
+              }
             } else {
                 if (checkoutButtonMainCount < 30) {
                     setTimeout(function() {
@@ -372,9 +386,12 @@ if (!checkoutFormMain.action.includes('add')) {
                 checkoutButtonMain2 = checkoutFormMain.querySelector('.shopify-payment-button__button--unbranded')
                 createModal(checkoutButtonMain2);
             }
+            checkoutFormMain.removeEventListener('submit', refreshDynamic);
+            checkoutFormMain.addEventListener('submit', refreshDynamic);
         });
 
     }
+}
 }
 
 function createModal(element) {
@@ -526,6 +543,19 @@ function isFirstStep() {
 
 }
 
+  
+  
+function refreshDynamic(event) {
+  //clear existing buttons
+  var existingModals = event.target.querySelectorAll('.morph-button');
+  console.log('removed');
+  existingModals.forEach(element => element.remove());
+  console.log('added');
+  var checkoutFormMain = (document.querySelector('[action="/cart"]') ? document.querySelector('[action="/cart"]') : document.querySelector('[action="/cart/add"]'));  
+  prepareButtons(checkoutFormMain);
+
+}  
+  
 
 function noenter() {
   if(window.event && window.event.keyCode == 13) {
