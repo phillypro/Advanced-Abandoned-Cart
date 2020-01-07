@@ -460,7 +460,6 @@ function createModal(element) {
                     onBeforeOpen: function() {
                         // don't allow to scroll
                         stopBodyScrolling(true);
-                    window.document.addEventListener('keydown', stopEnterKey);
                     },
                     onAfterOpen: function() {
                         // can scroll again
@@ -468,7 +467,6 @@ function createModal(element) {
                     onBeforeClose: function() {
                         // don't allow to scroll
                         stopBodyScrolling(false);
-                      window.document.removeEventListener('keydown', stopEnterKey);
                     },
                     onAfterClose: function() {
                         // can scroll again
