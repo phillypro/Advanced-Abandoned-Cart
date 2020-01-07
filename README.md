@@ -1,5 +1,4 @@
-# Advanced-Abandoned-Cart
-Advanced Abandoned Cart
+# Pre Checkout Email Grabber
 
 
 The Options we want them to be able to change
