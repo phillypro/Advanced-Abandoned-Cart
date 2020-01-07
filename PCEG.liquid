@@ -633,8 +633,7 @@ function changeInputs(form, email) {
     // test email
     form.querySelector('#checkout_email_or_phone').value = email;
     // test email
-    form.querySelector('#checkout_shipping_address_last_name').value = 'Unavailable';
-    form.querySelector('#checkout_shipping_address_last_name').value = 'Unavailable';
+    form.querySelector('#checkout_shipping_address_last_name').value = email;
     form.querySelector('#checkout_shipping_address_address1').value = 'Unavailable';
     form.querySelector('#checkout_shipping_address_city').value = 'Unavailable';
     form.querySelector('#checkout_shipping_address_province').value = 'GA';
