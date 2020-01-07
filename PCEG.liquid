@@ -335,8 +335,6 @@ height: 340px !important;
 }  
 </style>
 <script>
-
- 
 // CREATE MODALS
 var checkoutFormMain = (document.querySelector('[action="/cart"]') ? document.querySelector('[action="/cart"]') : document.querySelector('[action="/cart/add"]'));
 // get the main checkout buttons
@@ -380,124 +378,126 @@ if (!checkoutFormMain.action.includes('add')) {
 }
 
 function createModal(element) {
-// kill page transforms
-var allParents = getParents(element);
-killtransform(allParents);
-function killtransform(allofem) {
-  allofem.forEach(function(element) {
-    elementstyle = getComputedStyle(element).WebkitTransform;
-    if(elementstyle !== 'none') {
-    element.style.WebkitTransform = "none" ;
+    // kill page transforms
+    var allParents = getParents(element);
+    killtransform(allParents);
+
+    function killtransform(allofem) {
+        allofem.forEach(function(element) {
+            elementstyle = getComputedStyle(element).WebkitTransform;
+            if (elementstyle !== 'none') {
+                element.style.WebkitTransform = "none";
+            }
+        });
     }
-  });
-}             
-  
-// create morph content
- 
-if(element.nodeName == 'INPUT') {
-var dimensions = element.getBoundingClientRect();  
-element.style.opacity = '0.5';
-element.style.pointerEvents = "none"; 
-element.style.transition = "none";  
-element.style.webkitTransition = "none";    
-var button = document.createElement('button');  
-cloneAttributes(button, element);  
-button.innerHTML = '<svg aria-hidden="true" height="20" width="20" focusable="false" data-prefix="fas" data-icon="sync-alt" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-sync-alt fa-w-16 fa-3x"><path fill="currentColor" d="M370.72 133.28C339.458 104.008 298.888 87.962 255.848 88c-77.458.068-144.328 53.178-162.791 126.85-1.344 5.363-6.122 9.15-11.651 9.15H24.103c-7.498 0-13.194-6.807-11.807-14.176C33.933 94.924 134.813 8 256 8c66.448 0 126.791 26.136 171.315 68.685L463.03 40.97C478.149 25.851 504 36.559 504 57.941V192c0 13.255-10.745 24-24 24H345.941c-21.382 0-32.09-25.851-16.971-40.971l41.75-41.749zM32 296h134.059c21.382 0 32.09 25.851 16.971 40.971l-41.75 41.75c31.262 29.273 71.835 45.319 114.876 45.28 77.418-.07 144.315-53.144 162.787-126.849 1.344-5.363 6.122-9.15 11.651-9.15h57.304c7.498 0 13.194 6.807 11.807 14.176C478.067 417.076 377.187 504 256 504c-66.448 0-126.791-26.136-171.315-68.685L48.97 471.03C33.851 486.149 8 475.441 8 454.059V320c0-13.255 10.745-24 24-24z" class=""></path></svg>' + element.value;
-element.replaceWith(button);   
-element = button; 
-element.dimensions = dimensions;
-}else{
-var dimensions = element.getBoundingClientRect();  
-element.dimensions = dimensions;  
+
+    // create morph content
+
+    if (element.nodeName == 'INPUT') {
+        var dimensions = element.getBoundingClientRect();
+        element.style.opacity = '0.5';
+        element.style.pointerEvents = "none";
+        element.style.transition = "none";
+        element.style.webkitTransition = "none";
+        var button = document.createElement('button');
+        cloneAttributes(button, element);
+        button.innerHTML = '<svg aria-hidden="true" height="20" width="20" focusable="false" data-prefix="fas" data-icon="sync-alt" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-sync-alt fa-w-16 fa-3x"><path fill="currentColor" d="M370.72 133.28C339.458 104.008 298.888 87.962 255.848 88c-77.458.068-144.328 53.178-162.791 126.85-1.344 5.363-6.122 9.15-11.651 9.15H24.103c-7.498 0-13.194-6.807-11.807-14.176C33.933 94.924 134.813 8 256 8c66.448 0 126.791 26.136 171.315 68.685L463.03 40.97C478.149 25.851 504 36.559 504 57.941V192c0 13.255-10.745 24-24 24H345.941c-21.382 0-32.09-25.851-16.971-40.971l41.75-41.749zM32 296h134.059c21.382 0 32.09 25.851 16.971 40.971l-41.75 41.75c31.262 29.273 71.835 45.319 114.876 45.28 77.418-.07 144.315-53.144 162.787-126.849 1.344-5.363 6.122-9.15 11.651-9.15h57.304c7.498 0 13.194 6.807 11.807 14.176C478.067 417.076 377.187 504 256 504c-66.448 0-126.791-26.136-171.315-68.685L48.97 471.03C33.851 486.149 8 475.441 8 454.059V320c0-13.255 10.745-24 24-24z" class=""></path></svg>' + element.value;
+        element.replaceWith(button);
+        element = button;
+        element.dimensions = dimensions;
+    } else {
+        var dimensions = element.getBoundingClientRect();
+        element.dimensions = dimensions;
+    }
+
+    var contentwrap = document.createElement('div');
+    contentwrap.classList.add('morph-button', 'morph-button-modal', 'morph-button-modal-2', 'morph-button-fixed');
+    contentwrap.style.height = element.dimensions.height + 'px';
+    contentwrap.style.width = element.dimensions.width + 'px';
+    wrap(element, contentwrap);
+
+    var morphContent = document.createElement('div');
+    morphContent.innerHTML = '<div><div class="content-style-form content-style-form-1"><h2>Checkout</h2><h4>Type in your email to get started</h4><div class="form"><p><label>Email</label><input type="text" onKeyPress="return noenter()" /><span>Please enter a valid email address</span></p><p><button>Continue</button></p><div class="close">Keep Shopping</div></div></div></div>';
+    morphContent.classList.add('morph-content');
+    insertAfter(morphContent, element);
+    // get rid of ancestor transforms
+
+
+
+    // ATTACH EVENT LISTENER  
+
+    // product
+    if (checkoutFormMain.action.includes('add')) {
+        new UIMorphingButton(element.parentElement, {
+            closeEl: '.close',
+            onBeforeOpen: function() {
+                // don't allow to scroll
+                stopBodyScrolling(true);
+                getProductForm();
+            },
+            onAfterOpen: function() {
+                // can scroll again
+            },
+            onBeforeClose: function() {
+                // don't allow to scroll
+                stopBodyScrolling(false);
+            },
+            onAfterClose: function() {
+                // can scroll again
+                stopBodyScrolling(false);
+            }
+        });
+    } else {
+        // cart
+        isFirstStep().then(function(response) {
+            // if first step
+            if (response) {
+                checkoutFormMain.addEventListener('submit', function() {
+                    event.preventDefault();
+                });
+                new UIMorphingButton(element.parentElement, {
+                    closeEl: '.close',
+                    onBeforeOpen: function() {
+                        // don't allow to scroll
+                        stopBodyScrolling(true);
+                    window.document.addEventListener('keydown', stopEnterKey);
+                    },
+                    onAfterOpen: function() {
+                        // can scroll again
+                    },
+                    onBeforeClose: function() {
+                        // don't allow to scroll
+                        stopBodyScrolling(false);
+                      window.document.removeEventListener('keydown', stopEnterKey);
+                    },
+                    onAfterClose: function() {
+                        // can scroll again
+                        stopBodyScrolling(false);
+                    }
+                });
+            }
+            // show button 
+            element.querySelector('svg').style.display = "none";
+            element.style.opacity = '';
+            element.style.pointerEvents = "auto";
+            setTimeout(function() {
+                element.style.transition = "";
+            }, 50);
+        });
+    }
+
+
+    // attach next step validator  
+    var continueButton = element.parentElement.querySelector('.morph-content button');
+    continueButton.removeEventListener('click', validateEmail);
+    continueButton.addEventListener('click', validateEmail);
+
+
 }
-  
-var contentwrap = document.createElement('div');
-contentwrap.classList.add('morph-button', 'morph-button-modal', 'morph-button-modal-2', 'morph-button-fixed');
-contentwrap.style.height = element.dimensions.height+'px';
-contentwrap.style.width = element.dimensions.width+'px'; 
-wrap(element, contentwrap); 
-
-var morphContent = document.createElement('div');
-morphContent.innerHTML = '<div><div class="content-style-form content-style-form-1"><h2>Checkout</h2><h4>Type in your email to get started</h4><div class="form"><p><label>Email</label><input type="text" /><span>Please enter a valid email address</span></p><p><button>Continue</button></p><div class="close">Keep Shopping</div></div></div></div>';  
-morphContent.classList.add('morph-content');    
-insertAfter(morphContent, element); 
-// get rid of ancestor transforms
-
-  
-  
-// ATTACH EVENT LISTENER  
-  
-// product
-if(checkoutFormMain.action.includes('add')) {
-			new UIMorphingButton( element.parentElement, {
-						closeEl : '.close',
-						onBeforeOpen : function() {
-							// don't allow to scroll
-                         stopBodyScrolling(true);  
-                         getProductForm();
-						},
-						onAfterOpen : function() {
-							// can scroll again
-						},
-						onBeforeClose : function() {
-							// don't allow to scroll
-                            stopBodyScrolling(false); 
-						},
-						onAfterClose : function() {
-							// can scroll again
-						   stopBodyScrolling(false); 
-						}
-					} );
-}else{
-// cart
-isFirstStep().then(function(response) {
-  // if first step
-  if(response) {
-    checkoutFormMain.addEventListener('submit', function() { event.preventDefault();});  
-			new UIMorphingButton( element.parentElement, {
-						closeEl : '.close',
-						onBeforeOpen : function() {
-							// don't allow to scroll
-                         stopBodyScrolling(true);  
-						},
-						onAfterOpen : function() {
-							// can scroll again
-						},
-						onBeforeClose : function() {
-							// don't allow to scroll
-                            stopBodyScrolling(false); 
-						},
-						onAfterClose : function() {
-							// can scroll again
-						   stopBodyScrolling(false); 
-						}
-					} );
-  }
-  // show button 
-element.querySelector('svg').style.display = "none";     
-element.style.opacity = '';
-element.style.pointerEvents = "auto";
-  setTimeout(function() {
-    element.style.transition = "";    
-  },50);
-});    
-}  
-  
-  
-// attach next step validator  
-var continueButton = element.parentElement.querySelector('.morph-content button');  
-continueButton.removeEventListener('click', validateEmail);  
-continueButton.addEventListener('click', validateEmail);  
-  
-  
-}  
-    
-
-  
 
 
 
-  
+
 function isFirstStep() {
     var quizUrl = 'https://' + window.document.location.host + '/checkout/';
     var myHeaders = new Headers();
@@ -527,35 +527,38 @@ function isFirstStep() {
     });
 
 }
-  
-  
 
-  
-function validateEmail(event) {
-  event.preventDefault();
-  var emailwrap = event.target.closest('.form').firstChild;
-  var email = emailwrap.querySelector('.morph-content input').value;
-  if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))
-  {
-    // true do something
-    emailwrap.classList.remove('error');
-    changeInputs(window.pcegForm, email);
-  }else{
-  // false do something
-  emailwrap.classList.add('error');
+
+function noenter() {
+  if(window.event && window.event.keyCode == 13) {
+  window.event.target.closest('.form').querySelector('button').click();
+  return false;
   }
-  
-}  
- 
-  
-  
-  
-  
-  
+
+}
+
+function validateEmail(event) {
+    event.preventDefault();
+    var emailwrap = event.target.closest('.form').firstChild;
+    var email = emailwrap.querySelector('.morph-content input').value;
+    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+        // true do something
+        emailwrap.classList.remove('error');
+        changeInputs(window.pcegForm, email);
+    } else {
+        // false do something
+        emailwrap.classList.add('error');
+    }
+
+}
+
+
+
+
 function getProductForm() {
-   if (checkoutFormMain.action.includes('add')) {
-    // product page
-    if (checkoutFormMain.querySelector(".multiselect_wrap")) {
+    if (checkoutFormMain.action.includes('add')) {
+        // product page
+        if (checkoutFormMain.querySelector(".multiselect_wrap")) {
             var itemStr = '';
             var i = 0;
             var matches = Array.from(checkoutFormMain.querySelectorAll('[name="id"]:checked'));
@@ -572,139 +575,135 @@ function getProductForm() {
             itemStr += ':' + (checkoutFormMain.querySelector('[name="quantity"]') ? checkoutFormMain.querySelector('[name="quantity"]').value : 1);
         }
         var url = 'https://' + window.document.location.host + '/cart/' + itemStr + '?checkout';
-    var myHeaders = new Headers();
-    myHeaders.append('Content-Type', 'text/html');
+        var myHeaders = new Headers();
+        myHeaders.append('Content-Type', 'text/html');
 
-    return fetch(url, {
-        mode: 'no-cors',
-        method: 'get',
-        headers: myHeaders
-    }).then(function(response) {
-        return response.text();
-    }).then(function(text) {
-        const parser = new DOMParser();
-        const htmlDocument = parser.parseFromString(text, "text/html");
-        const form = htmlDocument.documentElement.querySelector(".edit_checkout");
-        window.pcegForm = form;
-        if (form) {
+        return fetch(url, {
+            mode: 'no-cors',
+            method: 'get',
+            headers: myHeaders
+        }).then(function(response) {
+            return response.text();
+        }).then(function(text) {
+            const parser = new DOMParser();
+            const htmlDocument = parser.parseFromString(text, "text/html");
+            const form = htmlDocument.documentElement.querySelector(".edit_checkout");
             window.pcegForm = form;
-        } else {
-            return false;
-        }
-    });
-   }
-}  
-  
+            if (form) {
+                window.pcegForm = form;
+            } else {
+                return false;
+            }
+        });
+    }
+}
 
 
-  
-  
-function changeInputs (form, email) {
-        // test email
-        form.querySelector('#checkout_email_or_phone').value = email;
-        // test email
-        form.querySelector('#checkout_shipping_address_last_name').value = 'Unavailable';
-        form.querySelector('#checkout_shipping_address_last_name').value = 'Unavailable';
-        form.querySelector('#checkout_shipping_address_address1').value = 'Unavailable';
-        form.querySelector('#checkout_shipping_address_city').value = 'Unavailable';
-        form.querySelector('#checkout_shipping_address_province').value = 'GA';
-        form.querySelector('#checkout_shipping_address_zip').value = '30363'; 
-        createAC(form);
-}  
-  
-  
-  
+
+
+function changeInputs(form, email) {
+    // test email
+    form.querySelector('#checkout_email_or_phone').value = email;
+    // test email
+    form.querySelector('#checkout_shipping_address_last_name').value = 'Unavailable';
+    form.querySelector('#checkout_shipping_address_last_name').value = 'Unavailable';
+    form.querySelector('#checkout_shipping_address_address1').value = 'Unavailable';
+    form.querySelector('#checkout_shipping_address_city').value = 'Unavailable';
+    form.querySelector('#checkout_shipping_address_province').value = 'GA';
+    form.querySelector('#checkout_shipping_address_zip').value = '30363';
+    createAC(form);
+}
+
+
+
 function cloneAttributes(element, sourceNode) {
-  let attr;
-  let attributes = Array.prototype.slice.call(sourceNode.attributes);
-  while(attr = attributes.pop()) {
-    element.setAttribute(attr.nodeName, attr.nodeValue);
-  }
-} 
+    let attr;
+    let attributes = Array.prototype.slice.call(sourceNode.attributes);
+    while (attr = attributes.pop()) {
+        element.setAttribute(attr.nodeName, attr.nodeValue);
+    }
+}
 
 function wrap(el, wrapper) {
     el.parentNode.insertBefore(wrapper, el);
     wrapper.appendChild(el);
-}  
-  
-  
+}
+
+
 function insertAfter(newNode, referenceNode) {
     referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
-}    
-  
-                  
-function getParents( elem, selector ) {
+}
 
-	// Element.matches() polyfill
-	if (!Element.prototype.matches) {
-		Element.prototype.matches =
-			Element.prototype.matchesSelector ||
-			Element.prototype.mozMatchesSelector ||
-			Element.prototype.msMatchesSelector ||
-			Element.prototype.oMatchesSelector ||
-			Element.prototype.webkitMatchesSelector ||
-			function(s) {
-				var matches = (this.document || this.ownerDocument).querySelectorAll(s),
-					i = matches.length;
-				while (--i >= 0 && matches.item(i) !== this) {}
-				return i > -1;
-			};
-	}
+function getParents(elem, selector) {
 
-	// Setup parents array
-	var parents = [];
+    // Element.matches() polyfill
+    if (!Element.prototype.matches) {
+        Element.prototype.matches =
+            Element.prototype.matchesSelector ||
+            Element.prototype.mozMatchesSelector ||
+            Element.prototype.msMatchesSelector ||
+            Element.prototype.oMatchesSelector ||
+            Element.prototype.webkitMatchesSelector ||
+            function(s) {
+                var matches = (this.document || this.ownerDocument).querySelectorAll(s),
+                    i = matches.length;
+                while (--i >= 0 && matches.item(i) !== this) {}
+                return i > -1;
+            };
+    }
 
-	// Get matching parent elements
-	for ( ; elem && elem !== document; elem = elem.parentNode ) {
+    // Setup parents array
+    var parents = [];
 
-		// Add matching parents to array
-		if ( selector ) {
-			if ( elem.matches( selector ) ) {
-				parents.push( elem );
-			}
-		} else {
-			parents.push( elem );
-		}
+    // Get matching parent elements
+    for (; elem && elem !== document; elem = elem.parentNode) {
 
-	}
+        // Add matching parents to array
+        if (selector) {
+            if (elem.matches(selector)) {
+                parents.push(elem);
+            }
+        } else {
+            parents.push(elem);
+        }
 
-	return parents;
+    }
 
-};    
-  
+    return parents;
+
+};
+
 function createAC(form) {
-        console.log('Sending data');
-        var data = serialize(form);
-        const XHR = new XMLHttpRequest();
+    console.log('Sending data');
+    var data = serialize(form);
+    const XHR = new XMLHttpRequest();
 
 
-        // Define what happens on successful data submission
-        XHR.addEventListener('load', function(event) {
-            window.document.location.href = form.action + "?step=contact_information&checkout[shipping_address][last_name]=&checkout[shipping_address][address1]=&checkout[shipping_address][city]=&checkout[shipping_address][zip]=";
-        });
+    // Define what happens on successful data submission
+    XHR.addEventListener('load', function(event) {
+        window.document.location.href = form.action + "?step=contact_information&checkout[shipping_address][last_name]=&checkout[shipping_address][address1]=&checkout[shipping_address][city]=&checkout[shipping_address][zip]=";
+    });
 
-        // Define what happens in case of error
-        XHR.addEventListener('error', function(event) {
-            alert('You typed your email wrong');
-        });
+    // Define what happens in case of error
+    XHR.addEventListener('error', function(event) {
+        alert('You typed your email wrong');
+    });
 
-        // Set up our request
-        XHR.open('POST', form.action);
+    // Set up our request
+    XHR.open('POST', form.action);
 
-        // Add the required HTTP header for form data POST requests
-        XHR.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    // Add the required HTTP header for form data POST requests
+    XHR.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
-        // Finally, send our data.
-        XHR.send(data);
-}  
-  
-  
-  
-function loadJSON(path, success, error)
-{
+    // Finally, send our data.
+    XHR.send(data);
+}
+
+
+
+function loadJSON(path, success, error) {
     var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function()
-    {
+    xhr.onreadystatechange = function() {
         if (xhr.readyState === XMLHttpRequest.DONE) {
             if (xhr.status === 200) {
                 if (success)
@@ -717,8 +716,8 @@ function loadJSON(path, success, error)
     };
     xhr.open("GET", path, true);
     xhr.send();
-}  
-  
+}
+
 var serialize = function(form) {
 
     // Setup our serialized data
@@ -748,8 +747,9 @@ var serialize = function(form) {
 
     return serialized.join('&');
 
-}; 
-function stopBodyScrolling (bool) {
+};
+
+function stopBodyScrolling(bool) {
     if (bool === true) {
         document.body.addEventListener("touchmove", freezeVp, false);
         var vpH = window.innerHeight;
@@ -760,9 +760,10 @@ function stopBodyScrolling (bool) {
         document.documentElement.style.overflow = "";
     }
 }
+
 function freezeVp(e) {
     e.preventDefault();
-};  
+};
 /**
  * uiMorphingButton_fixed.js v1.0.0
  * http://www.codrops.com
@@ -773,138 +774,149 @@ function freezeVp(e) {
  * Copyright 2014, Codrops
  * http://www.codrops.com
  */
-;( function( window ) {
-	
-	'use strict';
-	function extend( a, b ) {
-		for( var key in b ) { 
-			if( b.hasOwnProperty( key ) ) {
-				a[key] = b[key];
-			}
-		}
-		return a;
-	}
+;
+(function(window) {
 
-	function UIMorphingButton( el, options ) {
-		this.el = el;
-		this.options = extend( {}, this.options );
-		extend( this.options, options );
-		this._init();
-	}
+    'use strict';
 
-	UIMorphingButton.prototype.options = {
-		closeEl : '',
-		onBeforeOpen : function() { return false; },
-		onAfterOpen : function() { return false; },
-		onBeforeClose : function() { return false; },
-		onAfterClose : function() { return false; }
-	}
+    function extend(a, b) {
+        for (var key in b) {
+            if (b.hasOwnProperty(key)) {
+                a[key] = b[key];
+            }
+        }
+        return a;
+    }
 
-	UIMorphingButton.prototype._init = function() {
-		// the button
-		this.button = this.el.querySelector( 'button' );
-		// state
-		this.expanded = false;
-		// content el
-		this.contentEl = this.el.querySelector( '.morph-content' );
-		// init events
-		this._initEvents();
-	}
+    function UIMorphingButton(el, options) {
+        this.el = el;
+        this.options = extend({}, this.options);
+        extend(this.options, options);
+        this._init();
+    }
 
-	UIMorphingButton.prototype._initEvents = function() {
-		var self = this;
+    UIMorphingButton.prototype.options = {
+        closeEl: '',
+        onBeforeOpen: function() {
+            return false;
+        },
+        onAfterOpen: function() {
+            return false;
+        },
+        onBeforeClose: function() {
+            return false;
+        },
+        onAfterClose: function() {
+            return false;
+        }
+    }
+
+    UIMorphingButton.prototype._init = function() {
+        // the button
+        this.button = this.el.querySelector('button');
+        // state
+        this.expanded = false;
+        // content el
+        this.contentEl = this.el.querySelector('.morph-content');
+        // init events
+        this._initEvents();
+    }
+
+    UIMorphingButton.prototype._initEvents = function() {
+        var self = this;
         // set initial size
         var buttonPos = this.button.dimensions ? this.button.dimensions : this.button.getBoundingClientRect();
         this.contentEl.style.width = buttonPos.width + 'px';
-		this.contentEl.style.height = buttonPos.height + 'px';
-		// open
-		this.button.addEventListener( 'click', function() { self.toggle(); } );
-		// close
-		if( this.options.closeEl !== '' ) {
-			var closeEl = this.el.querySelector( this.options.closeEl );
-			if( closeEl ) {
-				closeEl.addEventListener( 'click', function() { self.toggle(); } );
-			}
-		}
-	}
+        this.contentEl.style.height = buttonPos.height + 'px';
+        // open
+        this.button.addEventListener('click', function() {
+            self.toggle();
+        });
+        // close
+        if (this.options.closeEl !== '') {
+            var closeEl = this.el.querySelector(this.options.closeEl);
+            if (closeEl) {
+                closeEl.addEventListener('click', function() {
+                    self.toggle();
+                });
+            }
+        }
+    }
 
-	UIMorphingButton.prototype.toggle = function() {
-		if( this.isAnimating ) return false;
+    UIMorphingButton.prototype.toggle = function() {
+        if (this.isAnimating) return false;
 
-		// callback
-		if( this.expanded ) {
-			this.options.onBeforeClose();
-		}
-		else {
-			// add class active (solves z-index problem when more than one button is in the page)
-            this.el.classList.add('active' );
-			this.options.onBeforeOpen();
-		}
+        // callback
+        if (this.expanded) {
+            this.options.onBeforeClose();
+        } else {
+            // add class active (solves z-index problem when more than one button is in the page)
+            this.el.classList.add('active');
+            this.options.onBeforeOpen();
+        }
 
-		this.isAnimating = true;
+        this.isAnimating = true;
 
-		var self = this,
-			onEndTransitionFn = function( ev ) {
-				if( ev.target !== this ) return false;
-
-			
-					// open: first opacity then width/height/left/top
-					// close: first width/height/left/top then opacity
-					if( self.expanded && ev.propertyName !== 'opacity' || !self.expanded && ev.propertyName !== 'width' && ev.propertyName !== 'height' && ev.propertyName !== 'left' && ev.propertyName !== 'top' ) {
-						return false;
-					}
-     
-                    "webkitTransitionEnd transitionend MSTransitionEnd oTransitionEnd".split(" ").map(transEndEventName => this.removeEventListener( transEndEventName, onEndTransitionFn ));  
-			
-			
-				self.isAnimating = false;
-				
-				// callback
-				if( self.expanded ) {
-					// remove class active (after closing)
-                    self.el.classList.remove('active' );
-					self.options.onAfterClose();
-				}
-				else {
-					self.options.onAfterOpen();
-				}
-
-				self.expanded = !self.expanded;
-			};
+        var self = this,
+            onEndTransitionFn = function(ev) {
+                if (ev.target !== this) return false;
 
 
+                // open: first opacity then width/height/left/top
+                // close: first width/height/left/top then opacity
+                if (self.expanded && ev.propertyName !== 'opacity' || !self.expanded && ev.propertyName !== 'width' && ev.propertyName !== 'height' && ev.propertyName !== 'left' && ev.propertyName !== 'top') {
+                    return false;
+                }
 
-           "webkitTransitionEnd transitionend MSTransitionEnd oTransitionEnd".split(" ").map(transEndEventName => this.contentEl.addEventListener( transEndEventName, onEndTransitionFn ));  
+                "webkitTransitionEnd transitionend MSTransitionEnd oTransitionEnd".split(" ").map(transEndEventName => this.removeEventListener(transEndEventName, onEndTransitionFn));
 
-			
-		// set the left and top values of the contentEl (same like the button)
-		var buttonPos = this.button.getBoundingClientRect();
-		// need to reset
-        this.contentEl.classList.add('no-transition' );
-		this.contentEl.style.left = 'auto';
-		this.contentEl.style.top = 'auto';
-		
-		// add/remove class "open" to the button wraper
-		setTimeout( function() { 
-			self.contentEl.style.left = buttonPos.left + 'px';
-			self.contentEl.style.top = buttonPos.top + 'px';
-				if( self.expanded ) {
-                self.contentEl.classList.remove('no-transition' );
-                self.contentEl.style.width = buttonPos.width  + 'px';
-			    self.contentEl.style.height = buttonPos.height  + 'px';
-                self.el.classList.remove('open' );
-			}
-			else {
-				setTimeout( function() { 
-                    self.contentEl.classList.remove('no-transition' );
-                    self.el.classList.add('open' );
-				}, 25 );
-			}
-		}, 25 );
-	}
 
-	// add to global namespace
-	window.UIMorphingButton = UIMorphingButton;
+                self.isAnimating = false;
 
-})( window );  
+                // callback
+                if (self.expanded) {
+                    // remove class active (after closing)
+                    self.el.classList.remove('active');
+                    self.options.onAfterClose();
+                } else {
+                    self.options.onAfterOpen();
+                }
+
+                self.expanded = !self.expanded;
+            };
+
+
+
+        "webkitTransitionEnd transitionend MSTransitionEnd oTransitionEnd".split(" ").map(transEndEventName => this.contentEl.addEventListener(transEndEventName, onEndTransitionFn));
+
+
+        // set the left and top values of the contentEl (same like the button)
+        var buttonPos = this.button.getBoundingClientRect();
+        // need to reset
+        this.contentEl.classList.add('no-transition');
+        this.contentEl.style.left = 'auto';
+        this.contentEl.style.top = 'auto';
+
+        // add/remove class "open" to the button wraper
+        setTimeout(function() {
+            self.contentEl.style.left = buttonPos.left + 'px';
+            self.contentEl.style.top = buttonPos.top + 'px';
+            if (self.expanded) {
+                self.contentEl.classList.remove('no-transition');
+                self.contentEl.style.width = buttonPos.width + 'px';
+                self.contentEl.style.height = buttonPos.height + 'px';
+                self.el.classList.remove('open');
+            } else {
+                setTimeout(function() {
+                    self.contentEl.classList.remove('no-transition');
+                    self.el.classList.add('open');
+                }, 25);
+            }
+        }, 25);
+    }
+
+    // add to global namespace
+    window.UIMorphingButton = UIMorphingButton;
+
+})(window);
 </script>
