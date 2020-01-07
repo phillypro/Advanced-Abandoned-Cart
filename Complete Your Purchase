@@ -93,7 +93,7 @@
     <td class="actions__cell">
       <table class="button main-action-cell">
         <tr>
-          <td class="button__cell"><a href="{{ url }}" class="button__text">Items in your cart</a></td>
+          <td class="button__cell"><a href="{{ url }}&step=contact_information" class="button__text">Items in your cart</a></td>
         </tr>
       </table>
       {% if shop.url %}
