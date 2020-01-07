@@ -339,7 +339,7 @@ height: 340px !important;
 var checkoutFormMain = (document.querySelector('[action="/cart"]') ? document.querySelector('[action="/cart"]') : document.querySelector('[action="/cart/add"]'));  
   
 prepareButtons(checkoutFormMain); 
-  
+handleVariableChange();  
   
 function prepareButtons(checkoutFormMain) {  
 // get the main checkout buttons
@@ -544,6 +544,30 @@ function isFirstStep() {
 }
 
   
+function handleVariableChange() {
+   var checkoutFormMain = (document.querySelector('[action="/cart"]') ? document.querySelector('[action="/cart"]') : document.querySelector('[action="/cart/add"]'));  
+   var variantSelects = checkoutFormMain.querySelectorAll('select');
+ 
+  if(variantSelects) {
+    variantSelects.forEach(function(variantSelect) {
+    variantSelect.removeEventListener('change', refreshVariant);
+    variantSelect.addEventListener('change', refreshVariant);
+    });
+  }
+}  
+function refreshVariant(event) {
+  //clear existing buttons
+  var checkoutFormMain = event.target.closest('form');
+  var existingModals = checkoutFormMain.querySelectorAll('.morph-button');
+  existingModals.forEach(element => element.remove());
+  setTimeout(function() {
+    prepareButtons(checkoutFormMain);
+  });
+
+}  
+   
+  
+  
   
 function refreshDynamic(event) {
   //clear existing buttons
@@ -634,10 +658,10 @@ function changeInputs(form, email) {
     form.querySelector('#checkout_email_or_phone').value = email;
     // test email
     form.querySelector('#checkout_shipping_address_last_name').value = email;
-    form.querySelector('#checkout_shipping_address_address1').value = 'Unavailable';
-    form.querySelector('#checkout_shipping_address_city').value = 'Unavailable';
+    form.querySelector('#checkout_shipping_address_address1').value = '.';
+    form.querySelector('#checkout_shipping_address_city').value = '.';
     form.querySelector('#checkout_shipping_address_province').value = 'GA';
-    form.querySelector('#checkout_shipping_address_zip').value = '30363';
+    form.querySelector('#checkout_shipping_address_zip').value = '00000';
     createAC(form);
 }
 
