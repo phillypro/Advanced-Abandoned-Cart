@@ -1,5 +1,5 @@
 # Pre Checkout Email Grabber
-
+Supercharge your Abandoned checkout recovery by grabbing every email with a cart  
 
 The Options we want them to be able to change
 
