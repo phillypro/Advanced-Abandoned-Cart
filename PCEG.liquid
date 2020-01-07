@@ -1,59 +1,339 @@
 <style>
-  .pceg-wrap {
-      position: relative;
-  }
-  .pceg-wrap:before {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 800;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.5);
-    content: '';
-    opacity: 0;
-    -webkit-transition: opacity 0.5s;
-    transition: opacity 0.5s;
-    pointer-events: none;
-  }
-  .pceg {
-    background: white;
-    font-family: inherit;
-    font-weight: 600;
-    font-size: 100%;
-    text-align: center;
-    padding: 20px 30px 15px;
-    -webkit-box-shadow: 0 0 14px rgba(0, 0, 0, 0.22);
-    -moz-box-shadow: 0 0 14px rgba(0, 0, 0, 0.22);
-    box-shadow:0 0 14px rgba(0, 0, 0, 0.22);
-    
-    position: fixed;
-    z-index: 900;
-    opacity: 0;
-    -webkit-transition: opacity 0.3s 0.5s, width 0.4s 0.1s, height 0.4s 0.1s, top 0.4s 0.1s, left 0.4s 0.1s, margin 0.4s 0.1s;
-    transition: opacity 0.3s 0.5s, width 0.4s 0.1s, height 0.4s 0.1s, top 0.4s 0.1s, left 0.4s 0.1s, margin 0.4s 0.1s;
-  }
-  .pceg input {
-  width: 100%;
-  }
-  .pceg button {
-    padding: 7px 20px;
-    font-weight: 600;
-    border-radius: 0px 3px 3px 0px;
-    -webkit-border-radius: 0px 3px 3px 0px;
-    cursor: pointer;
-    width: 100%;
-    margin: 15px 0 20px;
-    outline: none;
-    border: none;
-  }
-  /* closed styles */
-  .pceg-wrap .open {
-  
-  }
- 
-</style>
+.content-style-form {
+	position: relative;
+	text-align: left;
+}
 
+.content-style-form h2 {
+    margin: 0;
+    padding: 0.4em 0 0.1em;
+    text-align: center;
+    font-weight: 300;
+    font-size: 37px;
+    text-transform: none;
+    letter-spacing: normal;
+    font-weight: 600;
+}
+.content-style-form h4 {
+    text-align: center;
+    margin: 0;
+    padding: 0 0 0.2em;
+      font-weight: normal;
+    letter-spacing: normal;
+    font-size: 16px;
+}
+
+.content-style-form .form {
+	padding: 10px 30px;
+}
+
+.content-style-form .form p {
+	margin: 0 0 5px 0;
+	font-size: 11px;
+}
+
+.content-style-form label {
+	display: block;
+	padding: 10px 0 0;
+	color: #6f6f6f;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	font-weight: bold;
+}
+
+.content-style-form .error input[type="text"],.content-style-form .error input[type="text"]:focus  {
+border-color:#ff1e1e;
+}
+.content-style-form span {
+margin-top: 5px;
+    display: none;
+    font-size: 14px;
+    line-height: normal;
+    color: red;
+}
+.content-style-form .error span {
+display:block;
+}
+
+.content-style-form input[type="text"] {
+	padding: 10px;
+	width: 100%;
+	border: 2px solid;
+   	border-color: #e0e0e0;
+	background: transparent;
+	color: #000000;
+	font-weight: 300;
+    font-size: 24px;
+}
+
+.content-style-form input[type="text"]:focus {
+  border-color: #6f6f6f;
+}
+
+.content-style-form input:focus {
+	outline: 0;
+}
+
+.content-style-form button {
+	display: block;
+    margin-top: 1em;
+padding: 1em;
+	width: 100%;
+	border: none;
+	background: #1D7A15;
+	color: #f9f6e5;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	font-weight: 800;
+    font-size: 20px;
+}
+
+.content-style-form .close {
+text-align: center;
+    padding: 10px 0;
+    font-size: 15px;
+    cursor:pointer;
+}
+
+
+
+
+/* Morph Button: Default Styles */
+
+.morph-button {
+	position: relative;
+    display:inline-block;
+}
+
+.morph-button > button {
+	padding:0;
+    line-height: normal;
+
+}
+
+.morph-button > button > svg {
+width: 14px;
+max-height: 100%;
+height: auto;
+display: inline-block;
+margin-right: 10px;
+vertical-align: middle;  
+-webkit-animation: morph-spin 2s infinite linear;
+animation: morph-spin 2s infinite linear;  
+}
+@-webkit-keyframes morph-spin {
+0% {
+    -webkit-transform: rotate(0deg);
+}
+100% {
+    -webkit-transform: rotate(359deg);
+}
+}
+@keyframes morph-spin {
+0% {
+    transform: rotate(0deg);
+}
+100% {
+    transform: rotate(359deg);
+}
+}
+.morph-button.open > button {
+	pointer-events: none;
+}
+
+.morph-content {
+	pointer-events: none;
+}
+
+.morph-button.open .morph-content {
+	pointer-events: auto;
+}
+
+/* Common styles for overlay and modal type (fixed morph) */
+.morph-button-fixed,
+.morph-button-fixed .morph-content {
+	width: 300px;
+	height: 80px;
+}
+
+.morph-button-fixed > button {
+	z-index: 1000;
+	width: 100%;
+	height: 100%;
+	-webkit-transition: opacity 0.1s 0.5s;
+	transition: opacity 0.1s 0.5s;
+}
+
+.morph-button-fixed.open > button {
+	opacity: 0;
+	-webkit-transition: opacity 0.1s;
+	transition: opacity 0.1s;
+}
+
+.morph-button-fixed .morph-content {
+	position: fixed;
+	z-index: 900;
+	opacity: 0;
+	-webkit-transition: opacity 0.3s 0.5s, width 0.4s 0.1s, height 0.4s 0.1s, top 0.4s 0.1s, left 0.4s 0.1s, margin 0.4s 0.1s;
+	transition: opacity 0.3s 0.5s, width 0.4s 0.1s, height 0.4s 0.1s, top 0.4s 0.1s, left 0.4s 0.1s, margin 0.4s 0.1s;
+}
+
+.morph-button-fixed.open .morph-content {
+	opacity: 1;
+}
+
+.morph-button-fixed .morph-content > div {
+	visibility: hidden;
+	height: 0;
+	opacity: 0;
+	-webkit-transition: opacity 0.1s, visibility 0s 0.1s, height 0s 0.1s;
+	transition: opacity 0.1s, visibility 0s 0.1s, height 0s 0.1s;
+}
+
+.morph-button-fixed.open .morph-content > div {
+	visibility: visible;
+	height: auto;
+	opacity: 1;
+	-webkit-transition: opacity 0.3s 0.5s;
+	transition: opacity 0.3s 0.5s;
+}
+
+.morph-button-fixed.active > button {
+	z-index: 2000;
+}
+
+.morph-button-fixed.active .morph-content {
+	z-index: 1900;
+}
+
+
+/* Morph Button Style: Modal */
+.morph-button-modal::before {
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 800;
+	width: 100%;
+	height: 100%;
+	background: rgba(0,0,0,0.5);
+	content: '';
+	opacity: 0;
+	-webkit-transition: opacity 0.5s;
+	transition: opacity 0.5s;
+	pointer-events: none;
+}
+
+.morph-button-modal.open::before {
+	opacity: 1;
+	pointer-events: auto;
+}
+
+.morph-button-modal.active::before {
+	z-index: 1800;
+}
+
+.morph-button-modal .morph-content {
+	overflow: hidden;
+	-webkit-transition: opacity 0.3s 0.5s, width 0.4s 0.1s, height 0.4s 0.1s, top 0.4s 0.1s, left 0.4s 0.1s, margin 0.4s 0.1s,  box-shadow 0.4s 0.1s;
+	transition: opacity 0.3s 0.5s, width 0.4s 0.1s, height 0.4s 0.1s, top 0.4s 0.1s, left 0.4s 0.1s, margin 0.4s 0.1s,  box-shadow 0.4s 0.1s;
+}
+
+.morph-button-modal.open .morph-content {
+	top: 50% !important;
+	left: 50% !important;
+	margin: -210px 0 0 -170px;
+	width: 340px !important;
+height: 340px !important;
+	-webkit-transition: width 0.4s 0.1s, height 0.4s 0.1s, top 0.4s 0.1s, left 0.4s 0.1s, margin 0.4s 0.1s, box-shadow 0.4s 0.1s;
+	transition: width 0.4s 0.1s, height 0.4s 0.1s, top 0.4s 0.1s, left 0.4s 0.1s, margin 0.4s 0.1s, box-shadow 0.4s 0.1s;
+   box-shadow: 1px 1px 28px rgba(0, 0, 0, 0.7);
+}
+
+
+
+.morph-button-modal .morph-content{
+	background-color: #fff;
+	color: #000;
+   
+}
+
+
+
+
+.morph-button-modal-2.open .morph-content > div {
+ 	-webkit-transition: opacity 0.3s 0.3s;
+	transition: opacity 0.3s 0.3s;
+}
+
+
+/* Let's add some nice easing for all cases */
+.morph-button .morph-content,
+.morph-button.open .morph-content {
+	-webkit-transition-timing-function: cubic-bezier(0.7,0,0.3,1);
+	transition-timing-function: cubic-bezier(0.7,0,0.3,1);
+}
+
+/* Helper classes */
+/* No JS fallback: let's hide the button and show the content */
+.no-js .morph-button > button {
+	display: none;
+}
+
+.no-js .morph-button {
+	margin: 10px 0;
+	float: none;
+}
+
+.no-js .morph-button,
+.no-js .morph-button .morph-content,
+.no-js .morph-button .morph-content > div {
+	position: relative;
+	width: auto;
+	height: auto;
+	opacity: 1;
+	visibility: visible;
+	top: auto;
+	left: auto;
+	-webkit-transform: none;
+	transform: none;
+	pointer-events: auto;
+}
+
+.no-js .morph-button .morph-content .icon-close {
+	display: none;
+}
+
+.no-js .morph-button-sidebar {
+	width: 300px;
+	position: fixed;
+	top: 0;
+	left: 0;
+	margin: 0;
+	height: 100%;
+	background: #e85657;
+	overflow: auto;
+}
+
+.no-transition {
+	-webkit-transition: none !important;
+	transition: none !important;
+}
+
+/* Media Queries */
+
+@media screen and (max-width: 600px) {
+	.morph-button-modal.open .morph-content {
+		top: 0% !important;
+		left: 0% !important;
+		margin: 0;
+		width: 100% !important;
+		height: 100% !important;
+		overflow-y: scroll;
+		-webkit-transition: width 0.4s 0.1s, height 0.4s 0.1s, top 0.4s 0.1s, left 0.4s 0.1s,  box-shadow 0.4s 0.1s,;
+		transition: width 0.4s 0.1s, height 0.4s 0.1s, top 0.4s 0.1s, left 0.4s 0.1s,  box-shadow 0.4s 0.1s,;
+	}
+}  
+</style>
 <script>
 
  
@@ -61,7 +341,7 @@
 var checkoutFormMain = (document.querySelector('[action="/cart"]') ? document.querySelector('[action="/cart"]') : document.querySelector('[action="/cart/add"]'));
 // get the main checkout buttons
 if (!checkoutFormMain.action.includes('add')) {
-    var checkoutButtonMain = checkoutFormMain.querySelector('[type="submit"]');
+    var checkoutButtonMain = checkoutFormMain.querySelector('[type="submit"][name="checkout"]');
     createModal(checkoutButtonMain);
 } else {
     var checkoutButtonMain = checkoutFormMain.querySelector('.shopify-payment-button__more-options');
@@ -100,57 +380,120 @@ if (!checkoutFormMain.action.includes('add')) {
 }
 
 function createModal(element) {
+// kill page transforms
+var allParents = getParents(element);
+killtransform(allParents);
+function killtransform(allofem) {
+  allofem.forEach(function(element) {
+    elementstyle = getComputedStyle(element).WebkitTransform;
+    if(elementstyle !== 'none') {
+    element.style.WebkitTransform = "none" ;
+    }
+  });
+}             
+  
 // create morph content
+ 
+if(element.nodeName == 'INPUT') {
+var dimensions = element.getBoundingClientRect();  
+element.style.opacity = '0.5';
+element.style.pointerEvents = "none"; 
+element.style.transition = "none";  
+element.style.webkitTransition = "none";    
+var button = document.createElement('button');  
+cloneAttributes(button, element);  
+button.innerHTML = '<svg aria-hidden="true" height="20" width="20" focusable="false" data-prefix="fas" data-icon="sync-alt" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-sync-alt fa-w-16 fa-3x"><path fill="currentColor" d="M370.72 133.28C339.458 104.008 298.888 87.962 255.848 88c-77.458.068-144.328 53.178-162.791 126.85-1.344 5.363-6.122 9.15-11.651 9.15H24.103c-7.498 0-13.194-6.807-11.807-14.176C33.933 94.924 134.813 8 256 8c66.448 0 126.791 26.136 171.315 68.685L463.03 40.97C478.149 25.851 504 36.559 504 57.941V192c0 13.255-10.745 24-24 24H345.941c-21.382 0-32.09-25.851-16.971-40.971l41.75-41.749zM32 296h134.059c21.382 0 32.09 25.851 16.971 40.971l-41.75 41.75c31.262 29.273 71.835 45.319 114.876 45.28 77.418-.07 144.315-53.144 162.787-126.849 1.344-5.363 6.122-9.15 11.651-9.15h57.304c7.498 0 13.194 6.807 11.807 14.176C478.067 417.076 377.187 504 256 504c-66.448 0-126.791-26.136-171.315-68.685L48.97 471.03C33.851 486.149 8 475.441 8 454.059V320c0-13.255 10.745-24 24-24z" class=""></path></svg>' + element.value;
+element.replaceWith(button);   
+element = button; 
+element.dimensions = dimensions;
+}else{
+var dimensions = element.getBoundingClientRect();  
+element.dimensions = dimensions;  
+}
+  
 var contentwrap = document.createElement('div');
-contentwrap.classList.add('pceg-wrap');
-wrap(element, contentwrap);  
+contentwrap.classList.add('morph-button', 'morph-button-modal', 'morph-button-modal-2', 'morph-button-fixed');
+contentwrap.style.height = element.dimensions.height+'px';
+contentwrap.style.width = element.dimensions.width+'px'; 
+wrap(element, contentwrap); 
+
 var morphContent = document.createElement('div');
-morphContent.innerHTML = '<div class="content"><h4>Type in your email to get started</h4><div><input type="email" placeholder="Your@email.com" /><button>Continue</button></div><div>';  
-morphContent.classList.add('pceg');   
-morphContent.style.height = contentwrap.clientHeight + 'px';    
-morphContent.style.width = contentwrap.clientWidth + 'px';     
+morphContent.innerHTML = '<div><div class="content-style-form content-style-form-1"><h2>Checkout</h2><h4>Type in your email to get started</h4><div class="form"><p><label>Email</label><input type="text" /><span>Please enter a valid email address</span></p><p><button>Continue</button></p><div class="close">Keep Shopping</div></div></div></div>';  
+morphContent.classList.add('morph-content');    
 insertAfter(morphContent, element); 
+// get rid of ancestor transforms
+
+  
   
 // ATTACH EVENT LISTENER  
   
 // product
 if(checkoutFormMain.action.includes('add')) {
-  element.removeEventListener('click', openModal);
-  element.addEventListener('click', openModal);
+			new UIMorphingButton( element.parentElement, {
+						closeEl : '.close',
+						onBeforeOpen : function() {
+							// don't allow to scroll
+                         stopBodyScrolling(true);  
+                         getProductForm();
+						},
+						onAfterOpen : function() {
+							// can scroll again
+						},
+						onBeforeClose : function() {
+							// don't allow to scroll
+                            stopBodyScrolling(false); 
+						},
+						onAfterClose : function() {
+							// can scroll again
+						   stopBodyScrolling(false); 
+						}
+					} );
 }else{
 // cart
 isFirstStep().then(function(response) {
   // if first step
   if(response) {
-  element.removeEventListener('click', openModal);
-  element.addEventListener('click', openModal);  
+    checkoutFormMain.addEventListener('submit', function() { event.preventDefault();});  
+			new UIMorphingButton( element.parentElement, {
+						closeEl : '.close',
+						onBeforeOpen : function() {
+							// don't allow to scroll
+                         stopBodyScrolling(true);  
+						},
+						onAfterOpen : function() {
+							// can scroll again
+						},
+						onBeforeClose : function() {
+							// don't allow to scroll
+                            stopBodyScrolling(false); 
+						},
+						onAfterClose : function() {
+							// can scroll again
+						   stopBodyScrolling(false); 
+						}
+					} );
   }
+  // show button 
+element.querySelector('svg').style.display = "none";     
+element.style.opacity = '';
+element.style.pointerEvents = "auto";
+  setTimeout(function() {
+    element.style.transition = "";    
+  },50);
 });    
 }  
+  
+  
+// attach next step validator  
+var continueButton = element.parentElement.querySelector('.morph-content button');  
+continueButton.removeEventListener('click', validateEmail);  
+continueButton.addEventListener('click', validateEmail);  
+  
+  
 }  
     
 
   
-// OPEN MODAL
-function openModal(event) {
-event.preventDefault();  
-var target = event.target.nodeName;  
-if(target == 'FORM') { 
-target = checkoutButtonMain;    
-}else{
-target = event.target;
-}
-  
-var pcegWrap = target.parentElement;   
-var pcegContent = pcegWrap.querySelector('.pceg');     
-// move modal to start position 
-
-
-  
-// add open class
-var pcegWrap = target.parentElement; 
-pcegWrap.classList.add('open');  
-};  
 
 
 
@@ -170,6 +513,7 @@ function isFirstStep() {
         const parser = new DOMParser();
         const htmlDocument = parser.parseFromString(text, "text/html");
         const form = htmlDocument.documentElement.querySelector(".edit_checkout");
+        window.pcegForm = form;
         if (form) {
             var currentStep = form.querySelector('[name="step"]');
             if (currentStep.value == 'shipping_method') {
@@ -186,9 +530,29 @@ function isFirstStep() {
   
   
 
+  
+function validateEmail(event) {
+  event.preventDefault();
+  var emailwrap = event.target.closest('.form').firstChild;
+  var email = emailwrap.querySelector('.morph-content input').value;
+  if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))
+  {
+    // true do something
+    emailwrap.classList.remove('error');
+    changeInputs(window.pcegForm, email);
+  }else{
+  // false do something
+  emailwrap.classList.add('error');
+  }
+  
+}  
  
   
-function getCheckoutURL(event) {
+  
+  
+  
+  
+function getProductForm() {
    if (checkoutFormMain.action.includes('add')) {
     // product page
     if (checkoutFormMain.querySelector(".multiselect_wrap")) {
@@ -208,34 +572,36 @@ function getCheckoutURL(event) {
             itemStr += ':' + (checkoutFormMain.querySelector('[name="quantity"]') ? checkoutFormMain.querySelector('[name="quantity"]').value : 1);
         }
         var url = 'https://' + window.document.location.host + '/cart/' + itemStr + '?checkout';
-   }else{
-   // cart page 
-   dofetch('https://' + window.document.location.host + '/checkout');  
+    var myHeaders = new Headers();
+    myHeaders.append('Content-Type', 'text/html');
+
+    return fetch(url, {
+        mode: 'no-cors',
+        method: 'get',
+        headers: myHeaders
+    }).then(function(response) {
+        return response.text();
+    }).then(function(text) {
+        const parser = new DOMParser();
+        const htmlDocument = parser.parseFromString(text, "text/html");
+        const form = htmlDocument.documentElement.querySelector(".edit_checkout");
+        window.pcegForm = form;
+        if (form) {
+            window.pcegForm = form;
+        } else {
+            return false;
+        }
+    });
    }
 }  
   
 
-function dofetch(url) {  
-var quizUrl = url;
-var myHeaders = new Headers();
-myHeaders.append('Content-Type', 'text/html');
-fetch(quizUrl,{
-    mode: 'no-cors',
-    method: 'get',
-    headers: myHeaders
-}).then(function(response) {
-    response.text().then(function(text) {
-    const parser = new DOMParser();
-    const htmlDocument = parser.parseFromString(text, "text/html");
-    const form = htmlDocument.documentElement.querySelector(".edit_checkout");
-    var currentStep = form.querySelector('[name="step"]');
-      if(currentStep.value != 'shipping_method') {
-       // if not on first step then lets redirect them 
-      window.document.location.href= form.action;
-      } else{
-       // lets get that sweet sweet email
+
+  
+  
+function changeInputs (form, email) {
         // test email
-        form.querySelector('#checkout_email_or_phone').value = 'dangerguy3@gmail.com';
+        form.querySelector('#checkout_email_or_phone').value = email;
         // test email
         form.querySelector('#checkout_shipping_address_last_name').value = 'Unavailable';
         form.querySelector('#checkout_shipping_address_last_name').value = 'Unavailable';
@@ -243,18 +609,18 @@ fetch(quizUrl,{
         form.querySelector('#checkout_shipping_address_city').value = 'Unavailable';
         form.querySelector('#checkout_shipping_address_province').value = 'GA';
         form.querySelector('#checkout_shipping_address_zip').value = '30363'; 
-        //createAAC(form);
-      }
-      
-      
-    })
-}).catch(function(err) {
-  console.log(err)
-});  
-}
+        createAC(form);
+}  
   
   
   
+function cloneAttributes(element, sourceNode) {
+  let attr;
+  let attributes = Array.prototype.slice.call(sourceNode.attributes);
+  while(attr = attributes.pop()) {
+    element.setAttribute(attr.nodeName, attr.nodeValue);
+  }
+} 
 
 function wrap(el, wrapper) {
     el.parentNode.insertBefore(wrapper, el);
@@ -266,7 +632,47 @@ function insertAfter(newNode, referenceNode) {
     referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
 }    
   
-function createAAC(form) {
+                  
+function getParents( elem, selector ) {
+
+	// Element.matches() polyfill
+	if (!Element.prototype.matches) {
+		Element.prototype.matches =
+			Element.prototype.matchesSelector ||
+			Element.prototype.mozMatchesSelector ||
+			Element.prototype.msMatchesSelector ||
+			Element.prototype.oMatchesSelector ||
+			Element.prototype.webkitMatchesSelector ||
+			function(s) {
+				var matches = (this.document || this.ownerDocument).querySelectorAll(s),
+					i = matches.length;
+				while (--i >= 0 && matches.item(i) !== this) {}
+				return i > -1;
+			};
+	}
+
+	// Setup parents array
+	var parents = [];
+
+	// Get matching parent elements
+	for ( ; elem && elem !== document; elem = elem.parentNode ) {
+
+		// Add matching parents to array
+		if ( selector ) {
+			if ( elem.matches( selector ) ) {
+				parents.push( elem );
+			}
+		} else {
+			parents.push( elem );
+		}
+
+	}
+
+	return parents;
+
+};    
+  
+function createAC(form) {
         console.log('Sending data');
         var data = serialize(form);
         const XHR = new XMLHttpRequest();
@@ -342,5 +748,163 @@ var serialize = function(form) {
 
     return serialized.join('&');
 
+}; 
+function stopBodyScrolling (bool) {
+    if (bool === true) {
+        document.body.addEventListener("touchmove", freezeVp, false);
+        var vpH = window.innerHeight;
+        document.documentElement.style.height = vpH.toString() + "px";
+        document.documentElement.style.overflow = "hidden";
+    } else {
+        document.body.removeEventListener("touchmove", freezeVp, false);
+        document.documentElement.style.overflow = "";
+    }
+}
+function freezeVp(e) {
+    e.preventDefault();
 };  
+/**
+ * uiMorphingButton_fixed.js v1.0.0
+ * http://www.codrops.com
+ *
+ * Licensed under the MIT license.
+ * http://www.opensource.org/licenses/mit-license.php
+ * 
+ * Copyright 2014, Codrops
+ * http://www.codrops.com
+ */
+;( function( window ) {
+	
+	'use strict';
+	function extend( a, b ) {
+		for( var key in b ) { 
+			if( b.hasOwnProperty( key ) ) {
+				a[key] = b[key];
+			}
+		}
+		return a;
+	}
+
+	function UIMorphingButton( el, options ) {
+		this.el = el;
+		this.options = extend( {}, this.options );
+		extend( this.options, options );
+		this._init();
+	}
+
+	UIMorphingButton.prototype.options = {
+		closeEl : '',
+		onBeforeOpen : function() { return false; },
+		onAfterOpen : function() { return false; },
+		onBeforeClose : function() { return false; },
+		onAfterClose : function() { return false; }
+	}
+
+	UIMorphingButton.prototype._init = function() {
+		// the button
+		this.button = this.el.querySelector( 'button' );
+		// state
+		this.expanded = false;
+		// content el
+		this.contentEl = this.el.querySelector( '.morph-content' );
+		// init events
+		this._initEvents();
+	}
+
+	UIMorphingButton.prototype._initEvents = function() {
+		var self = this;
+        // set initial size
+        var buttonPos = this.button.dimensions ? this.button.dimensions : this.button.getBoundingClientRect();
+        this.contentEl.style.width = buttonPos.width + 'px';
+		this.contentEl.style.height = buttonPos.height + 'px';
+		// open
+		this.button.addEventListener( 'click', function() { self.toggle(); } );
+		// close
+		if( this.options.closeEl !== '' ) {
+			var closeEl = this.el.querySelector( this.options.closeEl );
+			if( closeEl ) {
+				closeEl.addEventListener( 'click', function() { self.toggle(); } );
+			}
+		}
+	}
+
+	UIMorphingButton.prototype.toggle = function() {
+		if( this.isAnimating ) return false;
+
+		// callback
+		if( this.expanded ) {
+			this.options.onBeforeClose();
+		}
+		else {
+			// add class active (solves z-index problem when more than one button is in the page)
+            this.el.classList.add('active' );
+			this.options.onBeforeOpen();
+		}
+
+		this.isAnimating = true;
+
+		var self = this,
+			onEndTransitionFn = function( ev ) {
+				if( ev.target !== this ) return false;
+
+			
+					// open: first opacity then width/height/left/top
+					// close: first width/height/left/top then opacity
+					if( self.expanded && ev.propertyName !== 'opacity' || !self.expanded && ev.propertyName !== 'width' && ev.propertyName !== 'height' && ev.propertyName !== 'left' && ev.propertyName !== 'top' ) {
+						return false;
+					}
+     
+                    "webkitTransitionEnd transitionend MSTransitionEnd oTransitionEnd".split(" ").map(transEndEventName => this.removeEventListener( transEndEventName, onEndTransitionFn ));  
+			
+			
+				self.isAnimating = false;
+				
+				// callback
+				if( self.expanded ) {
+					// remove class active (after closing)
+                    self.el.classList.remove('active' );
+					self.options.onAfterClose();
+				}
+				else {
+					self.options.onAfterOpen();
+				}
+
+				self.expanded = !self.expanded;
+			};
+
+
+
+           "webkitTransitionEnd transitionend MSTransitionEnd oTransitionEnd".split(" ").map(transEndEventName => this.contentEl.addEventListener( transEndEventName, onEndTransitionFn ));  
+
+			
+		// set the left and top values of the contentEl (same like the button)
+		var buttonPos = this.button.getBoundingClientRect();
+		// need to reset
+        this.contentEl.classList.add('no-transition' );
+		this.contentEl.style.left = 'auto';
+		this.contentEl.style.top = 'auto';
+		
+		// add/remove class "open" to the button wraper
+		setTimeout( function() { 
+			self.contentEl.style.left = buttonPos.left + 'px';
+			self.contentEl.style.top = buttonPos.top + 'px';
+				if( self.expanded ) {
+                self.contentEl.classList.remove('no-transition' );
+                self.contentEl.style.width = buttonPos.width  + 'px';
+			    self.contentEl.style.height = buttonPos.height  + 'px';
+                self.el.classList.remove('open' );
+			}
+			else {
+				setTimeout( function() { 
+                    self.contentEl.classList.remove('no-transition' );
+                    self.el.classList.add('open' );
+				}, 25 );
+			}
+		}, 25 );
+	}
+
+	// add to global namespace
+	window.UIMorphingButton = UIMorphingButton;
+
+})( window );  
 </script>
